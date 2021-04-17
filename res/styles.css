@@ -1,0 +1,116 @@
+@font-face {
+    /* TF2 font */
+    font-family: TF2;
+    src: url(TF2.ttf);
+}
+
+body {
+    background: #F0F8FF;
+    font-family: TF2;
+}
+
+input[type=text] {
+    font-family: bold sans-serif;
+    font-size: 1.3em;
+    width: 100%;
+}
+
+p {
+    font-family: TF2;
+    background: #F0F8FF;
+    padding: 0.5em;
+    text-align: center;
+}
+
+#left,
+#right {
+    font-family: sans-serif;
+    padding: 2em;
+    background: #F3A957;
+    border: 0.2em solid #79542B;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    width: 10em;
+    height: 20em;
+}
+
+#main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#main>div {
+    margin: 1em;
+}
+
+#killicon_list {
+    padding: 2em;
+    width: 10em;
+    height: 20em;
+    background-color: #F3A957;
+    border: 0.2em solid #79542B;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+#killicon_list>img {
+    display: flex;
+    margin-bottom: 0.5em;
+    width: 7em;
+    background-color: #F9D483;
+    border: 0.2em solid #79542B;
+    padding: 0.7em;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+
+/* btn */
+
+button {
+    padding: 0.5em;
+    font-family: TF2;
+    font-weight: 900;
+    font-size: 2em;
+    width: 8em;
+    border-radius: 0.5em;
+    border: 0.1em solid #79542B;
+    background: linear-gradient(180deg, rgba(255, 255, 224, 1) 35%, rgba(207, 207, 194, 1) 100%);
+    -webkit-border-radius: 0.5em;
+    -moz-border-radius: 0.5em;
+    -ms-border-radius: 0.5em;
+    -o-border-radius: 0.5em;
+}
+
+#display-feed {
+    margin-top: 1em;
+    background: #F9D483;
+    border: 0.2em solid #79542B;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    padding: 2em;
+    width: 40em;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    -ms-transform: translate(-50%, 0%);
+    -o-transform: translate(-50%, 0%);
+}

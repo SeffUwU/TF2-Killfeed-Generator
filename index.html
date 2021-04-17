@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title> Team Fortress 2 Killfeed Generator </title>
+    <link rel="shortcut icon" href="res/favicon.png" type="image/x-icon">
+    <script src="res/jquery-3.6.0.min.js"></script>
+    <script src="res/main_script.js"></script>
+    <link rel="stylesheet" href="res/styles.css">
+</head>
+
+<body onload="get_icon_list()">
+    <h1 align="center"> Team Fortress 2 Killfeed Generator </h1>
+    <div id="main">
+        <div class="in-main" id="left">
+            <p> Who killed?</p>
+            <input type="text" id="KILLER" value="KILLER"> </input>
+        </div>
+        <div class="in-main" id="killicon_list">
+            <!-- IMAGES GO HERE!-->
+        </div>
+        <div class="in-main" id="right">
+            <p> Whom died?</p>
+            <input type="text" id="VICTIM" value="VICTIM"> </input>
+        </div>
+    </div>
+    <div align="center">
+        <p align="center" class="p_btn"> <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button></p>
+        <p align="center" class="p_btn"> <input id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label></p>
+        <p align="center" class="p_btn"> <button id="kill_btn" onclick="color_switch(); draw_kill()" data-icon-id='1'> SWITCH COLORS? </button></p>
+    </div>
+    <div>
+        <canvas id='display-feed' data-icon-id='1' data-colors='0' data-crit='0'>
+			<!-- GENERATED GOES HERE -->
+		</canvas>
+    </div>
+</body>
+
+</html>
