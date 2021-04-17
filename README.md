@@ -16,7 +16,3 @@ None. Just run the index.html
 1. RMB on the canvas.
 2. Select "Save Image As..."
 3. Save
-
----
-permalink: /index.html
----
