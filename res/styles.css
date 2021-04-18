@@ -4,9 +4,11 @@
     src: url(TF2.ttf);
 }
 
+html,
 body {
     background: #F0F8FF;
     font-family: TF2, sans-serif;
+    overflow-x: hidden;
 }
 
 input[type=text] {
@@ -26,7 +28,7 @@ input[type=text] {
     -moz-border-radius: 7px;
     -ms-border-radius: 7px;
     -o-border-radius: 7px;
-    width: 10em;
+    width: 25%;
     height: 5em;
 }
 
@@ -62,7 +64,7 @@ input[type=text] {
     -ms-transform: translate(-50%, 0%);
     -o-transform: translate(-50%, 0%);
     padding: 2em;
-    width: 30em;
+    width: 40%;
     height: 20em;
     background-color: #F3A957;
     border: 0.2em solid #79542B;
@@ -78,7 +80,7 @@ input[type=text] {
 #killicon_list>img {
     display: inline-block;
     margin: 0.3em;
-    height: 2em;
+    height: 8%;
     background-color: #F9D483;
     border: 0.2em solid #79542B;
     padding: 0.7em;
@@ -97,7 +99,7 @@ button {
     font-family: TF2;
     font-weight: 900;
     font-size: 2em;
-    width: 8em;
+    width: 25%;
     border-radius: 0.5em;
     border: 0.1em solid #79542B;
     background: linear-gradient(180deg, rgba(255, 255, 224, 1) 35%, rgba(207, 207, 194, 1) 100%);
@@ -126,7 +128,7 @@ button:hover {
     -ms-border-radius: 7px;
     -o-border-radius: 7px;
     padding: 2em;
-    width: 40em;
+    width: 60%;
     height: auto;
     position: relative;
     left: 50%;
@@ -190,4 +192,27 @@ button:hover {
     width: 8em;
     font-size: 1em;
     margin-top: 0.8em;
+}
+
+@media screen and (max-width: 600px) {
+    #left,
+    #right {
+        height: 25%;
+    }
+    #sort {
+        width: 90%;
+    }
+    #killicon_list>img {
+        width: 80%;
+        height: auto;
+    }
+    #killicon_list {
+        width: 60%;
+    }
+    button {
+        width: 50%;
+    }
+    #display-feed {
+        width: 100%;
+    }
 }
