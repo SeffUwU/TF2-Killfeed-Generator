@@ -3,7 +3,7 @@ function get_icon_list() {
     var len = Object.keys(iconlist).length; // icon list
     console.log(len);
     var f = "icons_sorted/";
-    for (var i = 1; i < len+; i++) {
+    for (var i = 1; i < len+1; i++) {
         var fname = Object.keys(iconlist[`${i}`]);
         var tags = iconlist[`${i}`][`${fname}`];
         $("#killicon_list").append(`<img class="selectable-img ${tags}" src="${f}${fname}" data-fname="${fname}">`)
@@ -122,7 +122,7 @@ function draw_kill(special) {
             }
             var feed_len = 147 + ctx.measureText(KILLER).width + image_width + domination_offsetX + ctx.measureText(VICTIM).width;
             // DRAW RECT
-            ctx.roundRect(70, 20, feed_len, c.height, 5);
+            ctx.roundRect(70, 20, feed_len, c.height, 10);
             ctx.strokeStyle = "#000";
             ctx.fillStyle = '#F1E9CB';
             ctx.fill();
@@ -131,7 +131,7 @@ function draw_kill(special) {
             ctx.fillText(KILLER, 90, 58);
             // ICON COORDS
             var destX = 105 + ctx.measureText(KILLER).width;
-            var destY = c.height / 2 - this.height / 2 + 10;
+            var destY = c.height / 2 - this.height / 2 + 9;
             // DRAW special_bg
             if (df.attr("data-special-bg") != "0") {
                 ctx.drawImage(
