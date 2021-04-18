@@ -84,7 +84,7 @@ function color_switch() {
     }
 }
 
-function draw_kill() {
+function draw_kill(special) {
     // main function, draws killfeed wannabe
     var image = new Image();
     var special_bg = new Image(); // special_bg BG
@@ -116,11 +116,15 @@ function draw_kill() {
             // SETUP
             var image_width = this.width;
             ctx.font = "bold 125% Verdana";
-            var feed_len = 137 + ctx.measureText(KILLER).width + image_width + ctx.measureText(VICTIM).width;
+            var domination_offsetX = 0
+            if (special == 1) {
+                domination_offsetX = ctx.measureText("is DOMINATING").width;
+            }
+            var feed_len = 147 + ctx.measureText(KILLER).width + image_width + domination_offsetX + ctx.measureText(VICTIM).width;
             // DRAW RECT
             ctx.roundRect(70, 20, feed_len, c.height, 5);
             ctx.strokeStyle = "#000";
-            ctx.fillStyle = '#F1E9CB'
+            ctx.fillStyle = '#F1E9CB';
             ctx.fill();
             // DRAW KILLER
             ctx.fillStyle = l_name_color;
@@ -139,9 +143,14 @@ function draw_kill() {
             }
             // DRAW ICON
             ctx.drawImage(this, destX, destY);
+            // DRAW DOMINATION
+            if (special == 1) {
+                ctx.fillStyle = '#3e3923';
+                ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
+            }
             // DRAW VICTIM
             ctx.fillStyle = r_name_color;
-            ctx.fillText(VICTIM, destX + image_width + 14, 58);
+            ctx.fillText(VICTIM, destX + image_width + domination_offsetX + (special == 1 ? 24 : 14), 58);
         }
         // SRC
     if (df.attr("data-special-bg") == "1") {
@@ -149,7 +158,12 @@ function draw_kill() {
     } else {
         special_bg.src = $(`[data-fname='Killicon_australium.png']`).attr("src");
     }
-    image.src = $(`[data-fname='${id}']`).attr("src");
+    if (special == 1) {
+        image.src = "icons_sorted/Killicon_domination.png";
+    } else {
+        image.src = $(`[data-fname='${id}']`).attr("src");
+    }
+
 
 
 

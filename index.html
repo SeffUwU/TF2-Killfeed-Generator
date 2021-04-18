@@ -6,15 +6,15 @@
     <title> Team Fortress 2 Killfeed Generator </title>
     <link rel="shortcut icon" href="res/favicon.png" type="image/x-icon">
     <script src="res/jquery-3.6.0.min.js"></script>
-    <script src="res/main_script.js"></script>
-    <link rel="stylesheet" href="res/styles.css">
+    <script src="res/main_script-min.js"></script>
+    <link rel="stylesheet" href="res/styles-min.css">
     <script type="text/javascript" src="res/icon.json"></script>
 
 </head>
 
-<body onload="get_icon_list()">
+<body onload="get_icon_list(); draw_kill()">
     <h1 align="center"> Team Fortress 2 Killfeed Generator </h1>
-    <h3 align="center"> <a style="text-decoration: none; color:inherit" href="https://steamcommunity.com/id/seffuwu"> Steam Profile</a> <br> <a style="text-decoration: none; color:inherit" href="https://github.com/SeffUwU/TF2-Killfeed-Generator"> GitHub</a></h3>
+    <h1 align="center"> <a style="text-decoration: none; color:#0366d6; " href="https://steamcommunity.com/id/seffuwu"> Steam Profile</a> <br> <a style="text-decoration: none; color:#0366d6;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator"> GitHub</a></h1>
     <div id="main">
         <div class="in-main" id="left">
             <p> Who's the Killer?</p>
@@ -47,10 +47,15 @@
         <!-- ICONS GO HERE -->
     </div>
     <div align="center">
-        <p align="center" class="p_btn"> <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button></p>
         <p align="center" class="p_btn">
-            <input id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label>
-            <input id="is_aussie" style="width: 2em;" type="checkbox"><label for="is_aussie">Aussie?</label>
+            <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
+            <button id="kill_btn" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
+        </p>
+        <p align="center" class="p_btn">
+            <input style="margin-bottom: 1em" id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label>
+            <input style="margin-bottom: 1em" id="is_aussie" style="width: 2em;" type="checkbox"><label for="is_aussie">Aussie?</label>
+            <!-- WIP <br>
+                <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <a href="#" onclick='draw_kill()'>CUSTOM!</a> -->
         </p>
 
         <p align="center" class="p_btn"> <button id="kill_btn" onclick="color_switch(); draw_kill()" data-icon-id='1'> SWITCH COLORS? </button></p>
@@ -59,8 +64,8 @@
     </div>
     <div>
         <canvas id='display-feed' data-icon-id='Killicon_golden_frying_pan.png' data-colors='0' data-special-bg='0'>
-			<!-- CANVAS GOES HERE -->
-		</canvas>
+                <!-- CANVAS GOES HERE -->
+            </canvas>
     </div>
     <p align="center"> To Save: RMB and press "Save Image As.."</p>
 </body>
