@@ -248,5 +248,6 @@ var iconlist = {
 "247":{"Killicon_wrap_assassin_ball.png":"scout melee"},
 "248":{"Killicon_wrench.png":"engi melee"},
 "249":{"Killicon_your_eternal_reward.png":"spy melee"},
-"250":{"Killicon_domination.png":"allclass other"}
+"250":{"Killicon_domination.png":"allclass other"},
+"251":{"Killicon_uwu.png":"allclass other"}
 };

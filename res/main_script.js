@@ -3,7 +3,7 @@ function get_icon_list() {
     var len = Object.keys(iconlist).length; // icon list
     console.log(len);
     var f = "icons_sorted/";
-    for (var i = 1; i < len; i++) {
+    for (var i = 1; i < len+; i++) {
         var fname = Object.keys(iconlist[`${i}`]);
         var tags = iconlist[`${i}`][`${fname}`];
         $("#killicon_list").append(`<img class="selectable-img ${tags}" src="${f}${fname}" data-fname="${fname}">`)
