@@ -134,12 +134,14 @@ function draw_kill(special) {
             var destY = c.height / 2 - this.height / 2 + 9;
             // DRAW special_bg
             if (df.attr("data-special-bg") != "0") {
+				ctx.globalAlpha = 0.75;
                 ctx.drawImage(
                     special_bg,
                     destX + image_width / 2 - special_bg.width,
                     destY - special_bg.height / 2,
                     special_bg.width * 2,
                     special_bg.height * 2);
+				ctx.globalAlpha = 1;
             }
             // DRAW ICON
             ctx.drawImage(this, destX, destY);
