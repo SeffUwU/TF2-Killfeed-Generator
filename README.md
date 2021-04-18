@@ -1,6 +1,9 @@
 # TF2-Killfeed-Generator
  A simple TF2 Killfeed Generator, based on HTML and JS. Close Enuf
 
+## Use right now!
+https://seffuwu.github.io/TF2-Killfeed-Generator/
+
 ## Installation
 None. Just run the index.html
 
