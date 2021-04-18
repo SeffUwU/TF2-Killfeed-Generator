@@ -10,7 +10,7 @@ body {
 }
 
 input[type=text] {
-    font-family: bold sans-serif;
+    font-family: bold Verdana;
     font-size: 1.3em;
     width: 100%;
 }
@@ -18,7 +18,7 @@ input[type=text] {
 #left,
 #right {
     font-family: sans-serif;
-    padding: 2em;
+    padding: 0.2em 2em 2em 2em;
     background: #F3A957;
     border: 0.2em solid #79542B;
     border-radius: 7px;
@@ -27,7 +27,7 @@ input[type=text] {
     -ms-border-radius: 7px;
     -o-border-radius: 7px;
     width: 10em;
-    height: 20em;
+    height: 5em;
 }
 
 .in-main>p {
@@ -46,7 +46,6 @@ input[type=text] {
 #main {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     justify-content: center;
 }
 
@@ -55,8 +54,15 @@ input[type=text] {
 }
 
 #killicon_list {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    -ms-transform: translate(-50%, 0%);
+    -o-transform: translate(-50%, 0%);
     padding: 2em;
-    width: 10em;
+    width: 30em;
     height: 20em;
     background-color: #F3A957;
     border: 0.2em solid #79542B;
@@ -70,9 +76,9 @@ input[type=text] {
 }
 
 #killicon_list>img {
-    display: flex;
-    margin-bottom: 0.5em;
-    width: 7em;
+    display: inline-block;
+    margin: 0.3em;
+    height: 2em;
     background-color: #F9D483;
     border: 0.2em solid #79542B;
     padding: 0.7em;
@@ -101,6 +107,15 @@ button {
     -o-border-radius: 0.5em;
 }
 
+button:hover {
+    background: linear-gradient(180deg, rgb(150, 150, 131) 35%, rgba(207, 207, 194, 1) 100%);
+    transition: all 0.7s ease-out;
+    -webkit-transition: all 0.7s ease-out;
+    -moz-transition: all 0.7s ease-out;
+    -ms-transition: all 0.7s ease-out;
+    -o-transition: all 0.7s ease-out;
+}
+
 #display-feed {
     margin-top: 1em;
     background: #F9D483;
@@ -119,4 +134,53 @@ button {
     -moz-transform: translate(-50%, 0%);
     -ms-transform: translate(-50%, 0%);
     -o-transform: translate(-50%, 0%);
+}
+
+#sort {
+    background: #F9D483;
+    margin-bottom: 0.5em;
+    border: 0.2em solid #79542B;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    padding: 1em 0.5em 1em 0.5em;
+    width: 30em;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    -webkit-transform: translate(-50%, 0%);
+    -moz-transform: translate(-50%, 0%);
+    -ms-transform: translate(-50%, 0%);
+    -o-transform: translate(-50%, 0%);
+}
+
+#sort>img {
+    height: 3em;
+}
+
+#sort>img {
+    background-color: #2b793f73;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+#sort>p {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#sort>p>img {
+    height: 2.5em;
+    background-color: #2b793f73;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
 }

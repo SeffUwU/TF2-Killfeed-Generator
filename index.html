@@ -8,6 +8,8 @@
     <script src="res/jquery-3.6.0.min.js"></script>
     <script src="res/main_script.js"></script>
     <link rel="stylesheet" href="res/styles.css">
+    <script type="text/javascript" src="res/icon.json"></script>
+
 </head>
 
 <body onload="get_icon_list()">
@@ -18,21 +20,45 @@
             <p> Who's the Killer?</p>
             <input type="text" id="KILLER" value="KILLER"> </input>
         </div>
-        <div class="in-main" id="killicon_list">
-            <!-- ICONS GO HERE -->
-        </div>
         <div class="in-main" id="right">
             <p> Who's the Victim'?</p>
             <input type="text" id="VICTIM" value="VICTIM"> </input>
         </div>
     </div>
+    <div id="sort">
+        <img class="sortable" src="sort/1.png" alt="Scout" data-tags="scout" data-sort="on">
+        <img class="sortable" src="sort/2.png" alt="Soldier" data-tags="soldier" data-sort="on">
+        <img class="sortable" src="sort/3.png" alt="Pyro" data-tags="pyro" data-sort="on">
+        <img class="sortable" src="sort/4.png" alt="Demoman" data-tags="demo" data-sort="on">
+        <img class="sortable" src="sort/5.png" alt="Heavy" data-tags="heavy" data-sort="on">
+        <img class="sortable" src="sort/6.png" alt="Engineer" data-tags="engi" data-sort="on">
+        <img class="sortable" src="sort/7.png" alt="Medic" data-tags="medic" data-sort="on">
+        <img class="sortable" src="sort/8.png" alt="Sniper" data-tags="sniper" data-sort="on">
+        <img class="sortable" src="sort/9.png" alt="Spy" data-tags="spy" data-sort="on">
+        <p>
+            <img class="sortable" src="sort/primary.png" alt="Primary" data-tags="primary" data-sort="on">
+            <img class="sortable" src="sort/secondary.png" alt="Secondary" data-tags="secondary" data-sort="on">
+            <img class="sortable" src="sort/melee.png" alt="Melee" data-tags="melee" data-sort="on">
+            <img class="sortable" src="sort/pda.png" alt="PDA" data-tags="pda" data-sort="on">
+            <img class="sortable" src="sort/other.png" alt="Other" data-tags="other" data-sort="on">
+        </p>
+    </div>
+    <div id="killicon_list">
+        <!-- ICONS GO HERE -->
+    </div>
     <div align="center">
         <p align="center" class="p_btn"> <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button></p>
-        <p align="center" class="p_btn"> <input id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label></p>
+        <p align="center" class="p_btn">
+            <input id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label>
+            <input id="is_aussie" style="width: 2em;" type="checkbox"><label for="is_aussie">Aussie?</label>
+        </p>
+
         <p align="center" class="p_btn"> <button id="kill_btn" onclick="color_switch(); draw_kill()" data-icon-id='1'> SWITCH COLORS? </button></p>
+        <p align="center" class="p_btn"> <button id="kill_btn" onclick="save()" data-icon-id='1'> SAVE? </button></p>
+
     </div>
     <div>
-        <canvas id='display-feed' data-icon-id='1' data-colors='0' data-crit='0'>
+        <canvas id='display-feed' data-icon-id='Killicon_golden_frying_pan.png' data-colors='0' data-special-bg='0'>
 			<!-- CANVAS GOES HERE -->
 		</canvas>
     </div>

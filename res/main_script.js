@@ -1,26 +1,52 @@
 function get_icon_list() {
     // Show Icon List
-    var f = "icons/";
-    for (var i = 1; i < 249; i++) {
-        $("#killicon_list").append(`<img class="selectable-img" src="${f}(${i}).png" data-id="${i}">`)
+    var len = Object.keys(iconlist).length; // icon list
+    console.log(len);
+    var f = "icons_sorted/";
+    for (var i = 1; i < len; i++) {
+        var fname = Object.keys(iconlist[`${i}`]);
+        var tags = iconlist[`${i}`][`${fname}`];
+        $("#killicon_list").append(`<img class="selectable-img ${tags}" src="${f}${fname}" data-fname="${fname}">`)
     }
 }
 $(document).ready(function() {
-
+    // special_bg?
     $('#is_crit').change(function() {
-        // Crit?
         var df = $("#display-feed");
         if (this.checked) {
-            df.attr("data-crit", 1)
+            df.attr("data-special-bg", 1)
+            $('#is_aussie').prop('checked', false);
         } else {
-            df.attr("data-crit", 0)
+            df.attr("data-special-bg", 0)
         }
     });
-
+    // Aussie?
+    $('#is_aussie').change(function() {
+        var df = $("#display-feed");
+        if (this.checked) {
+            df.attr("data-special-bg", 2)
+            $('#is_crit').prop('checked', false);
+        } else {
+            df.attr("data-special-bg", 0)
+        }
+    });
+    // "Sort"
+    $('.sortable').click(function() {
+        var tag = $(this).attr('data-tags');
+        if ($(this).attr('data-sort') == "off") {
+            $(`.${tag}`).css("display", "");
+            $(this).attr('data-sort', "on");
+            $(this).css("background-color", "#2b793f73");
+        } else {
+            $(`.${tag}`).css("display", "none");
+            $(this).attr('data-sort', "off");
+            $(this).css("background-color", "#d4232373");
+        }
+    })
 });
 $(document).on("click", ".selectable-img", function() {
     // Select Kill Icon
-    var img_id = $(this).attr("data-id");
+    var img_id = $(this).attr("data-fname");
     var sel = $(".selectable-img");
     sel.css("border", "0.2em solid #79542B");
     sel.css("background-color", "#F9D483");
@@ -61,7 +87,7 @@ function color_switch() {
 function draw_kill() {
     // main function, draws killfeed wannabe
     var image = new Image();
-    var crit = new Image(); // Crit BG
+    var special_bg = new Image(); // special_bg BG
 
     var df = $("#display-feed");
 
@@ -78,7 +104,7 @@ function draw_kill() {
     var VICTIM = $("#VICTIM").val(); // victim name
     var id = df.attr('data-icon-id'); // icon id from canvas attributes
     image.origin = 'anonymous';
-    image.src = $(`[data-id='${id}']`).attr("src"); // icon
+    image.src = $(`[data-fname='${id}']`).attr("src"); // icon
 
     var c = document.getElementById("display-feed");
     c.width = 1000;
@@ -87,36 +113,53 @@ function draw_kill() {
 
     // DRAW
     image.onload = function() {
-        // SETUP
-        var image_width = this.width;
-        ctx.font = "bold 125% sans-serif";
-        var feed_len = 137 + ctx.measureText(KILLER).width + image_width + ctx.measureText(VICTIM).width;
-        // DRAW RECT
-        ctx.roundRect(70, 20, feed_len, c.height, 5);
-        ctx.strokeStyle = "#000";
-        ctx.fillStyle = '#F1E9CB'
-        ctx.fill();
-        // DRAW KILLER
-        ctx.fillStyle = l_name_color;
-        ctx.fillText(KILLER, 90, 58);
-        // ICON COORDS
-        var destX = 105 + ctx.measureText(KILLER).width;
-        var destY = c.height / 2 - this.height / 2 + 10;
-        // DRAW CRIT
-        if (df.attr("data-crit") == 1) {
-            ctx.drawImage(
-                crit,
-                destX + image_width / 2 - crit.width,
-                destY - crit.height / 2,
-                crit.width * 2,
-                crit.height * 2);
+            // SETUP
+            var image_width = this.width;
+            ctx.font = "bold 125% Verdana";
+            var feed_len = 137 + ctx.measureText(KILLER).width + image_width + ctx.measureText(VICTIM).width;
+            // DRAW RECT
+            ctx.roundRect(70, 20, feed_len, c.height, 5);
+            ctx.strokeStyle = "#000";
+            ctx.fillStyle = '#F1E9CB'
+            ctx.fill();
+            // DRAW KILLER
+            ctx.fillStyle = l_name_color;
+            ctx.fillText(KILLER, 90, 58);
+            // ICON COORDS
+            var destX = 105 + ctx.measureText(KILLER).width;
+            var destY = c.height / 2 - this.height / 2 + 10;
+            // DRAW special_bg
+            if (df.attr("data-special-bg") != "0") {
+                ctx.drawImage(
+                    special_bg,
+                    destX + image_width / 2 - special_bg.width,
+                    destY - special_bg.height / 2,
+                    special_bg.width * 2,
+                    special_bg.height * 2);
+            }
+            // DRAW ICON
+            ctx.drawImage(this, destX, destY);
+            // DRAW VICTIM
+            ctx.fillStyle = r_name_color;
+            ctx.fillText(VICTIM, destX + image_width + 14, 58);
         }
-        // DRAW ICON
-        ctx.drawImage(this, destX, destY);
-        // DRAW VICTIM
-        ctx.fillStyle = r_name_color;
-        ctx.fillText(VICTIM, destX + image_width + 14, 58);
+        // SRC
+    if (df.attr("data-special-bg") == "1") {
+        special_bg.src = $(`[data-fname='Killicon_crit.png']`).attr("src");
+    } else {
+        special_bg.src = $(`[data-fname='Killicon_australium.png']`).attr("src");
     }
-    image.src = $(`[data-id='${id}']`).attr("src");
-    crit.src = $(`[data-id='104']`).attr("src");
+    image.src = $(`[data-fname='${id}']`).attr("src");
+
+
+
+}
+
+function save() {
+    var canvas = document.getElementById("display-feed");
+    var link = document.createElement('a');
+    link.download = 'download.png';
+    link.href = canvas.toDataURL()
+    link.click();
+    link.delete;
 }
