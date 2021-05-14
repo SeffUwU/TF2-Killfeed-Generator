@@ -21,7 +21,7 @@ html {
 html,
 body {
     backdrop-filter: blur(4px);
-    font-family: TF2, sans-serif;
+    font-family: TF2, Arial, Helvetica, sans-serif;
     overflow-x: hidden;
     margin: 0;
 }
@@ -129,7 +129,7 @@ hr {
 }
 
 .in-main p {
-    font-family: TF2build;
+    font-family: TF2build, Arial, Helvetica, sans-serif;
 }
 
 input[type=text] {
@@ -138,7 +138,7 @@ input[type=text] {
     border: 0px;
     font-size: 1.3em;
     height: 1.6em;
-    font-family: Verdana, sans-serif;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -211,7 +211,7 @@ input[type=text] {
 
 button {
     background: #7e7264;
-    font-family: TF2build;
+    font-family: TF2build, Arial, Helvetica, sans-serif;
     font-size: 1.3rem;
     border: 0px;
     padding: 1rem;
