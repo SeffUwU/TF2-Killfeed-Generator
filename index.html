@@ -28,20 +28,24 @@
     <meta name="twitter:image" content="https://seffuwu.github.io/TF2-Killfeed-Generator/res/og-img.png">
 
     <title> Team Fortress 2 Killfeed Generator </title>
+
+    <link rel="preload" href="res/styles-min.css" as="style">
+    <link rel="preload" href="res/main_script-min.js" as="main_script">
+
     <link rel="shortcut icon" href="res/favicon.png" type="image/x-icon">
     <script src="res/jquery-3.6.0.min.js"></script>
-    <script src="res/main_script.js"></script>
-    <link rel="stylesheet" href="res/styles.css">
+    <script src="res/main_script-min.js"></script>
+    <link rel="stylesheet" href="res/styles-min.css">
     <script type="text/javascript" src="res/icon.json"></script>
 
 </head>
 
-<body onload="get_icon_list(); draw_kill()">
+<body onload="get_icon_list(); draw_kill();">
     <h1 align="center"> Team Fortress 2 Killfeed Generator </h1>
-    <h1 align="center"> <a style="text-decoration: none; color:#0366d6; " href="https://steamcommunity.com/id/seffuwu"> Steam Profile</a> <br> <a style="text-decoration: none; color:#0366d6;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator"> GitHub</a></h1>
+    <h1 align="center"> <a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu"> Steam Profile</a> <br> <a style="text-decoration: none; color:#feedd1;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator"> GitHub</a></h1>
     <div class='wrapper'>
         <div class="sort" class='same-size'>
-            <div class='sort sort-class'>
+            <div class='sort-btns sort-class'>
                 <img class="sortable" src="sort/1.png" alt="Scout" data-tags="scout" data-sort="on">
                 <img class="sortable" src="sort/2.png" alt="Soldier" data-tags="soldier" data-sort="on">
                 <img class="sortable" src="sort/3.png" alt="Pyro" data-tags="pyro" data-sort="on">
@@ -52,7 +56,7 @@
                 <img class="sortable" src="sort/8.png" alt="Sniper" data-tags="sniper" data-sort="on">
                 <img class="sortable" src="sort/9.png" alt="Spy" data-tags="spy" data-sort="on">
             </div>
-            <div class='sort sort-type'>
+            <div class='sort-btns sort-type'>
                 <img class="sortable" src="sort/primary.png" alt="Primary" data-tags="primary" data-sort="on">
                 <img class="sortable" src="sort/secondary.png" alt="Secondary" data-tags="secondary" data-sort="on">
                 <img class="sortable" src="sort/melee.png" alt="Melee" data-tags="melee" data-sort="on">
@@ -67,6 +71,40 @@
             <div class="in-main" id="left">
                 <p> Who's the Killer?</p>
                 <input type="text" id="KILLER" value="KILLER"> </input>
+                <div style="color: #b6872f;">
+                    <h2>HOW TO USE:</h2>
+                    <p> Select of the killicons, shown above. You can also sort them for time saving. </p>
+                    <p> Then elect the name of both killers and victims (or not).</p>
+                    <p> Then using the options menu, customize your killfeed message.</p>
+                    <p> Under the options menu, chose to either 'kill!', 'dominate!' to render the message, and 'save?' to download the result on your device. </p>
+
+                </div>
+            </div>
+            <div align="center" class='same-size'>
+
+                <hr>
+                <h2 style='font-family: TF2build;'>OPTIONS</h2>
+                <p align="center" class="chk_boxs">
+                    <label for="is_init" class='unselectable'>   <input style="margin-bottom: 1em" id="is_init" style="width: 2em;" type="checkbox" checked>     Initiator?</label>
+                    <label for="is_crit" class='unselectable'>   <input style="margin-bottom: 1em" id="is_crit" style="width: 2em;" type="checkbox">     Crit Kill?</label>
+                    <label for="is_aussie" class='unselectable'> <input style="margin-bottom: 1em" id="is_aussie" style="width: 2em;" type="checkbox">   Aussie?</label><br>
+                    <label for="is_drawIcon" class='unselectable'> <input style="margin-bottom: 1em" id="is_drawIcon" style="width: 2em;" type="checkbox" checked>   Draw killicon?</label><br>
+                    <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button onclick='draw_kill(2)'>CUSTOM!</button>
+                    <p align="center" class="btn"> <button id="kill_btn" onclick="color_switch();" data-icon-id='1'> SWITCH COLORS? </button></p>
+                    <div class="clr-show">
+                        <div class="clr-show-l"></div>
+                        <div class="clr-show-r"></div>
+                    </div>
+                </p>
+                <hr>
+                <p align="center" class="btn">
+                    <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
+                    <button id="kill_btn" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
+                </p>
+
+
+                <p align="center" class="btn"> <button id="save" onclick="save()" data-icon-id='1' data-img-width=''> SAVE? </button></p>
+
             </div>
             <div class="in-main" id="right">
                 <p> Who's the Victim'?</p>
@@ -77,28 +115,13 @@
     </div>
 
 
-    <div align="center" class='same-size'>
-        <p align="center" class="p_btn">
-            <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
-            <button id="kill_btn" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
-        </p>
-        <p align="center" class="p_btn">
-            <input style="margin-bottom: 1em" id="is_crit" style="width: 2em;" type="checkbox"><label for="is_crit">Crit Kill?</label>
-            <input style="margin-bottom: 1em" id="is_aussie" style="width: 2em;" type="checkbox"><label for="is_aussie">Aussie?</label>
-            <!-- WIP <br>
-                <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <a href="#" onclick='draw_kill()'>CUSTOM!</a> -->
-        </p>
 
-        <p align="center" class="p_btn"> <button id="kill_btn" onclick="color_switch(); draw_kill()" data-icon-id='1'> SWITCH COLORS? </button></p>
-        <p align="center" class="p_btn"> <button id="save" onclick="save()" data-icon-id='1' data-img-width=''> SAVE? </button></p>
-
-    </div>
     <div class='canvas-container'>
         <canvas id='display-feed' data-icon-id='Killicon_golden_frying_pan.png' data-colors='0' data-special-bg='0'>
                 <!-- CANVAS GOES HERE -->
             </canvas>
     </div>
-    <p align="center"> To Save: RMB and press "Save Image As.."</p>
+    <p align="center"> To Save: RMB and press "Save Image As.." <br> Or just press the "SAVE?" button.</p>
 </body>
 
 </html>

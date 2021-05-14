@@ -6,7 +6,7 @@ function get_icon_list() {
     for (var i = 1; i < len + 1; i++) {
         var fname = Object.keys(iconlist[`${i}`]);
         var tags = iconlist[`${i}`][`${fname}`];
-        $("#killicon_list").append(`<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}"> </div>`)
+        $("#killicon_list").append(`<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}" alt='` + fname.toString().slice(0, -4).replace("_", " ") + `'> </div>`)
     }
 }
 $(document).ready(function() {
@@ -36,7 +36,7 @@ $(document).ready(function() {
         if ($(this).attr('data-sort') == "off") {
             $(`.${tag}`).css("display", "");
             $(this).attr('data-sort', "on");
-            $(this).css("background-color", "#2b793f73");
+            $(this).css("background-color", "#2b793f");
         } else {
             $(`.${tag}`).css("display", "none");
             $(this).attr('data-sort', "off");
@@ -77,17 +77,31 @@ function color_switch() {
     var df = $("#display-feed");
     if (df.attr("data-colors") == 0) {
         df.attr("data-colors", 1);
+        $('.clr-show-l').css('background', '#004bff');
+        $('.clr-show-r').css('background', '#c40000');
     } else {
         df.attr("data-colors", 0);
+        $('.clr-show-l').css('background', '#c40000');
+        $('.clr-show-r').css('background', '#004bff');
     }
 }
 
 function draw_kill(special) {
-    var image = new Image();
-    var special_bg = new Image(); // special_bg BG
+    let image = new Image();
+    let special_bg = new Image(); // special_bg BG
+    special_bg.origin = 'anonymous';
+    image.origin = 'anonymous';
+    let df = $("#display-feed");
+    let KILLER = $("#KILLER").val(); // killer name
+    let VICTIM = $("#VICTIM").val(); // victim name
+    let id = df.attr('data-icon-id'); // icon fname from canvas attributes
 
-    var df = $("#display-feed");
-
+    let bg = '#F1E9CB';
+    if (!$('#is_init').prop('checked')) {
+        // killfeed background, changes according to
+        // inititator checkbox
+        bg = '#322c29';
+    }
     if (df.attr("data-colors") == 0) {
         // Picks color for Killer and Victim according to data-colors attribute
         var l_name_color = "#A3574A";
@@ -97,41 +111,55 @@ function draw_kill(special) {
         var l_name_color = "#557C83";
     }
 
-    var KILLER = $("#KILLER").val(); // killer name
-    var VICTIM = $("#VICTIM").val(); // victim name
-    var id = df.attr('data-icon-id'); // icon fname from canvas attributes
 
 
-    image.origin = 'anonymous';
-    special_bg.origin = 'anonymous';
+    image.src = 'icons_sorted/' + id; // icon
 
-    var c = document.getElementById("display-feed");
+    let c = document.getElementById("display-feed");
     c.width = 1000;
     c.height = 80;
-    var ctx = c.getContext("2d");
+    let ctx = c.getContext("2d");
     // DRAW
     image.onload = function() {
         // SETUP
-        var image_width = this.width;
-        ctx.font = "bold 125% Verdana";
-        var domination_offsetX = 0
-        if (special == 1) {
-            domination_offsetX = ctx.measureText("is DOMINATING").width;
+        let image_width = 0;
+        if ($('#is_drawIcon').prop('checked')) {
+            image_width = this.width;
         }
-        var feed_len = 112 + ctx.measureText(KILLER).width + image_width + domination_offsetX + ctx.measureText(VICTIM).width;
+        ctx.font = "bold 125% Verdana";
+
+        let custom_offsetX = 0; // Custom offset. Includes DOMINATION.
+        if (special == 1) {
+            custom_offsetX = ctx.measureText("is DOMINATING").width;
+        } else if (special == 2) {
+            custom_offsetX = ctx.measureText($('#custom_special').val()).width;
+        }
+
+        let custom_font_clr = '#3e3923'; // Font color changes whenether initiating a kill
+        if (!$('#is_init').prop('checked')) {
+            custom_font_clr = '#F1E9CB';
+        }
+
+
+        let feed_len = 112 + ctx.measureText(KILLER).width + image_width + custom_offsetX + ctx.measureText(VICTIM).width;
         $('#save').attr('data-img-width', Math.ceil(feed_len));
+
         // DRAW RECT
         let sorta_mid = (c.width / 2) - feed_len / 2;
         ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, c.height, 10);
         ctx.strokeStyle = "#000";
-        ctx.fillStyle = '#F1E9CB';
+        ctx.fillStyle = bg;
         ctx.fill();
         // DRAW KILLER
         ctx.fillStyle = l_name_color;
         ctx.fillText(KILLER, sorta_mid + 38, 58);
         // ICON COORDS
-        var destX = sorta_mid + 60 + ctx.measureText(KILLER).width;
-        var destY = c.height / 2 - this.height / 2 + 9;
+        let icon_offset = 40;
+        if ($('#is_drawIcon').prop('checked')) {
+            icon_offset = 60;
+        }
+        let destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
+        let destY = c.height / 2 - this.height / 2 + 9;
         // DRAW special_bg
         if (df.attr("data-special-bg") != "0") {
             ctx.globalAlpha = 0.75;
@@ -144,16 +172,22 @@ function draw_kill(special) {
             ctx.globalAlpha = 1;
         }
         // DRAW ICON
-        ctx.drawImage(this, destX, destY);
-        image.src = 'icons_sorted/' + id; // icon
+        if ($('#is_drawIcon').prop('checked')) {
+            ctx.drawImage(this, destX, destY);
+        }
+
+
         // DRAW DOMINATION
         if (special == 1) {
-            ctx.fillStyle = '#3e3923';
+            ctx.fillStyle = custom_font_clr;
             ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
+        } else if (special == 2) {
+            ctx.fillStyle = custom_font_clr;
+            ctx.fillText($('#custom_special').val(), destX + image_width + 14, 58);
         }
         // DRAW VICTIM
         ctx.fillStyle = r_name_color;
-        ctx.fillText(VICTIM, destX + image_width + domination_offsetX + (special == 1 ? 24 : 14), 58);
+        ctx.fillText(VICTIM, destX + image_width + custom_offsetX + ([1, 2].includes(special) ? 24 : 14), 58);
     }
 
     // SRC
@@ -177,10 +211,10 @@ function save() {
     temp_canvas.width = feed_len;
     temp_canvas.height = 80;
     tctx = temp_canvas.getContext('2d');
-    tctx.drawImage(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), sorta_mid, 0, feed_len, 80, 0, -10, feed_len, 80);
+    tctx.drawImage(canvas, sorta_mid, 0, feed_len, 80, 0, -10, feed_len, 80);
 
     var link = document.createElement('a');
-    link.download = 'download.png';
+    link.download = 'killfeed_generated.png';
     link.href = temp_canvas.toDataURL();
     link.click();
     link.delete;
