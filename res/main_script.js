@@ -3,10 +3,10 @@ function get_icon_list() {
     var len = Object.keys(iconlist).length; // icon list
     console.log(len);
     var f = "icons_sorted/";
-    for (var i = 1; i < len+1; i++) {
+    for (var i = 1; i < len + 1; i++) {
         var fname = Object.keys(iconlist[`${i}`]);
         var tags = iconlist[`${i}`][`${fname}`];
-        $("#killicon_list").append(`<img class="selectable-img ${tags}" src="${f}${fname}" data-fname="${fname}">`)
+        $("#killicon_list").append(`<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}"> </div>`)
     }
 }
 $(document).ready(function() {
@@ -44,15 +44,13 @@ $(document).ready(function() {
         }
     })
 });
-$(document).on("click", ".selectable-img", function() {
+$(document).on("click", ".list-item", function() {
     // Select Kill Icon
-    var img_id = $(this).attr("data-fname");
-    var sel = $(".selectable-img");
-    sel.css("border", "0.2em solid #79542B");
-    sel.css("background-color", "#F9D483");
-    $(this).css("border", "0.2em solid green");
-    $(this).css("background-color", "#BDB76B");
-    $("#display-feed").attr("data-icon-id", `${img_id}`);
+    $('.list-item').removeClass('selected');
+    var fname = $(this).attr("data-fname");
+    $(this).addClass('selected');
+
+    $("#display-feed").attr("data-icon-id", `${fname}`);
 });
 
 CanvasRenderingContext2D.prototype.roundRect = function(sx, sy, ex, ey, r) {
@@ -85,7 +83,6 @@ function color_switch() {
 }
 
 function draw_kill(special) {
-    // main function, draws killfeed wannabe
     var image = new Image();
     var special_bg = new Image(); // special_bg BG
 
@@ -102,80 +99,89 @@ function draw_kill(special) {
 
     var KILLER = $("#KILLER").val(); // killer name
     var VICTIM = $("#VICTIM").val(); // victim name
-    var id = df.attr('data-icon-id'); // icon id from canvas attributes
+    var id = df.attr('data-icon-id'); // icon fname from canvas attributes
+
+
     image.origin = 'anonymous';
-    image.src = $(`[data-fname='${id}']`).attr("src"); // icon
+    special_bg.origin = 'anonymous';
 
     var c = document.getElementById("display-feed");
     c.width = 1000;
     c.height = 80;
     var ctx = c.getContext("2d");
-
     // DRAW
     image.onload = function() {
-            // SETUP
-            var image_width = this.width;
-            ctx.font = "bold 125% Verdana";
-            var domination_offsetX = 0
-            if (special == 1) {
-                domination_offsetX = ctx.measureText("is DOMINATING").width;
-            }
-            var feed_len = 147 + ctx.measureText(KILLER).width + image_width + domination_offsetX + ctx.measureText(VICTIM).width;
-            // DRAW RECT
-            ctx.roundRect(70, 20, feed_len, c.height, 10);
-            ctx.strokeStyle = "#000";
-            ctx.fillStyle = '#F1E9CB';
-            ctx.fill();
-            // DRAW KILLER
-            ctx.fillStyle = l_name_color;
-            ctx.fillText(KILLER, 90, 58);
-            // ICON COORDS
-            var destX = 105 + ctx.measureText(KILLER).width;
-            var destY = c.height / 2 - this.height / 2 + 9;
-            // DRAW special_bg
-            if (df.attr("data-special-bg") != "0") {
-				ctx.globalAlpha = 0.75;
-                ctx.drawImage(
-                    special_bg,
-                    destX + image_width / 2 - special_bg.width,
-                    destY - special_bg.height / 2,
-                    special_bg.width * 2,
-                    special_bg.height * 2);
-				ctx.globalAlpha = 1;
-            }
-            // DRAW ICON
-            ctx.drawImage(this, destX, destY);
-            // DRAW DOMINATION
-            if (special == 1) {
-                ctx.fillStyle = '#3e3923';
-                ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
-            }
-            // DRAW VICTIM
-            ctx.fillStyle = r_name_color;
-            ctx.fillText(VICTIM, destX + image_width + domination_offsetX + (special == 1 ? 24 : 14), 58);
+        // SETUP
+        var image_width = this.width;
+        ctx.font = "bold 125% Verdana";
+        var domination_offsetX = 0
+        if (special == 1) {
+            domination_offsetX = ctx.measureText("is DOMINATING").width;
         }
-        // SRC
+        var feed_len = 112 + ctx.measureText(KILLER).width + image_width + domination_offsetX + ctx.measureText(VICTIM).width;
+        $('#save').attr('data-img-width', Math.ceil(feed_len));
+        // DRAW RECT
+        let sorta_mid = (c.width / 2) - feed_len / 2;
+        ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, c.height, 10);
+        ctx.strokeStyle = "#000";
+        ctx.fillStyle = '#F1E9CB';
+        ctx.fill();
+        // DRAW KILLER
+        ctx.fillStyle = l_name_color;
+        ctx.fillText(KILLER, sorta_mid + 38, 58);
+        // ICON COORDS
+        var destX = sorta_mid + 60 + ctx.measureText(KILLER).width;
+        var destY = c.height / 2 - this.height / 2 + 9;
+        // DRAW special_bg
+        if (df.attr("data-special-bg") != "0") {
+            ctx.globalAlpha = 0.75;
+            ctx.drawImage(
+                special_bg,
+                destX + image_width / 2 - special_bg.width,
+                destY - special_bg.height / 2,
+                special_bg.width * 2,
+                special_bg.height * 2);
+            ctx.globalAlpha = 1;
+        }
+        // DRAW ICON
+        ctx.drawImage(this, destX, destY);
+        image.src = 'icons_sorted/' + id; // icon
+        // DRAW DOMINATION
+        if (special == 1) {
+            ctx.fillStyle = '#3e3923';
+            ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
+        }
+        // DRAW VICTIM
+        ctx.fillStyle = r_name_color;
+        ctx.fillText(VICTIM, destX + image_width + domination_offsetX + (special == 1 ? 24 : 14), 58);
+    }
+
+    // SRC
     if (df.attr("data-special-bg") == "1") {
-        special_bg.src = $(`[data-fname='Killicon_crit.png']`).attr("src");
+        special_bg.src = $(`img[data-fname='Killicon_crit.png']`).attr("src");
     } else {
-        special_bg.src = $(`[data-fname='Killicon_australium.png']`).attr("src");
+        special_bg.src = $(`img[data-fname='Killicon_australium.png']`).attr("src");
     }
     if (special == 1) {
         image.src = "icons_sorted/Killicon_domination.png";
     } else {
-        image.src = $(`[data-fname='${id}']`).attr("src");
+        image.src = $(`img[data-fname='${id}']`).attr("src");
     }
-
-
-
-
 }
 
 function save() {
-    var canvas = document.getElementById("display-feed");
+    let feed_len = $("#save").attr("data-img-width");
+    let canvas = document.getElementById("display-feed");
+    let sorta_mid = (canvas.width / 2) - feed_len / 2;
+    let temp_canvas = document.createElement('canvas');
+    temp_canvas.width = feed_len;
+    temp_canvas.height = 80;
+    tctx = temp_canvas.getContext('2d');
+    tctx.drawImage(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), sorta_mid, 0, feed_len, 80, 0, -10, feed_len, 80);
+
     var link = document.createElement('a');
     link.download = 'download.png';
-    link.href = canvas.toDataURL()
+    link.href = temp_canvas.toDataURL();
     link.click();
     link.delete;
 }
