@@ -8,7 +8,7 @@
     <!-- HTML Meta Tags -->
     <title>Team Fortress 2 Killfeed Generator</title>
     <meta name="description" content="Make your own Team Fortress 2 themed killfeed messages">
-    <meta name="keywords" content="tf2, team fortress 2, killfeed, kill, feed, generator, team, fortress, steam, game, 440">
+    <meta name="keywords" content="tf2, team fortress 2, killfeed, kill, feed, generator, team, fortress, steam, game, 440, kill, notification, kill notification, kill notice, notice">
     <meta name="robots" content="index, follow">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="language" content="English">
@@ -31,11 +31,10 @@
     <title> Team Fortress 2 Killfeed Generator </title>
 
     <link rel="preload" href="res/styles-min.css" as="style">
-    <link rel="preload" href="res/main_script-min.js" as="main_script">
 
     <link rel="shortcut icon" href="res/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="res/styles-min.css">
-    <script src="res/jquery-3.6.0.min.js"></script>
+    <script src="res/jquery-3.6.0.slim.min.js"></script>
     <script type="text/javascript" src="res/icon.json"></script>
     <script src="res/main_script-min.js"></script>
 </head>
@@ -64,7 +63,7 @@
                 <img class="sortable" src="sort/other.png" alt="Other" data-tags="other" data-sort="on">
             </div>
         </div>
-        <div id="killicon_list">
+        <div class='killicon-container'>
             <!-- ICONS GO HERE -->
         </div>
         <div class="main" class='same-size'>
@@ -109,6 +108,10 @@
             <div class="in-main" id="right">
                 <p> Who's the Victim'?</p>
                 <input type="text" id="VICTIM" value="VICTIM"> </input>
+                <div style="color: #b6872f;">
+                    <h2>Thanks for using my killfeed generator!</h2>
+                    <p> If you encounter any bugs, feel free to leave a message on my steam profile!</p>
+                </div>
             </div>
         </div>
 

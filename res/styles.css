@@ -43,7 +43,7 @@ hr {
     align-items: center;
 }
 
-#killicon_list {
+.killicon-container {
     width: 80%;
     height: 500px;
     background: #2b2724;
@@ -53,14 +53,14 @@ hr {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-#killicon_list::-webkit-scrollbar {
+.killicon-container::-webkit-scrollbar {
     background: #feedd1;
 }
 
-#killicon_list::-webkit-scrollbar-thumb {
+.killicon-container::-webkit-scrollbar-thumb {
     background: #534b42;
     border: 2px solid #2b2724;
 }
@@ -247,11 +247,12 @@ button {
         width: inherit;
     }
     .list-item {
-        width: 20vw;
-        height: 7vw;
+        width: 40%;
+        height: 10vw;
     }
-    #killicon_list {
+    .killicon-container {
         width: calc(100% - 10px);
+        height: 300px;
         margin-right: 10px;
         margin-left: 10px;
     }
@@ -267,11 +268,12 @@ button {
         width: inherit;
     }
     .list-item {
-        width: 20vw;
-        height: 7vw;
+        width: 40%;
+        height: 10vw;
     }
-    #killicon_list {
+    .killicon-container {
         width: calc(100% - 10px);
+        height: 300px;
         margin-right: 10px;
         margin-left: 10px;
     }
@@ -287,11 +289,12 @@ button {
         width: inherit;
     }
     .list-item {
-        width: 20vw;
-        height: 7vw;
+        width: 35%;
+        height: 10vw;
     }
-    #killicon_list {
+    .killicon-container {
         width: calc(100% - 10px);
+        height: 300px;
         margin-right: 10px;
         margin-left: 10px;
     }

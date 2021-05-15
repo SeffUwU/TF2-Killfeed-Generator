@@ -1,12 +1,12 @@
 function get_icon_list() {
-    // Show Icon List
+    // Append icons in killicon-container
     var len = Object.keys(iconlist).length; // icon list
     console.log(len);
     var f = "icons_sorted/";
     for (var i = 1; i < len + 1; i++) {
         var fname = Object.keys(iconlist[`${i}`]);
         var tags = iconlist[`${i}`][`${fname}`];
-        $("#killicon_list").append(`<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}" alt='` + fname.toString().slice(0, -4).replace("_", " ") + `'> </div>`)
+        $(".killicon-container").append(`<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}" alt='` + fname.toString().slice(0, -4).replace("_", " ") + `'> </div>`)
     }
 }
 $(document).ready(function() {
@@ -100,7 +100,7 @@ function draw_kill(special) {
     if (!$('#is_init').prop('checked')) {
         // killfeed background, changes according to
         // inititator checkbox
-        bg = '#322c29';
+        bg = '#202020';
     }
     if (df.attr("data-colors") == 0) {
         // Picks color for Killer and Victim according to data-colors attribute
@@ -140,13 +140,13 @@ function draw_kill(special) {
             custom_font_clr = '#F1E9CB';
         }
 
-
         let feed_len = 112 + ctx.measureText(KILLER).width + image_width + custom_offsetX + ctx.measureText(VICTIM).width;
         $('#save').attr('data-img-width', Math.ceil(feed_len));
 
         // DRAW RECT
         let sorta_mid = (c.width / 2) - feed_len / 2;
-        ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, c.height, 10);
+
+        ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, c.height, 6);
         ctx.strokeStyle = "#000";
         ctx.fillStyle = bg;
         ctx.fill();
@@ -174,6 +174,22 @@ function draw_kill(special) {
         // DRAW ICON
         if ($('#is_drawIcon').prop('checked')) {
             ctx.drawImage(this, destX, destY);
+
+            if (!$('#is_init').prop('checked')) {
+                let masked_img = masked_image(this, 64, 60, 36, 255, 25);
+                let temp_c = document.createElement('canvas');
+                temp_c.width = c.width;
+                temp_c.height = c.height;
+                let tmpctx = temp_c.getContext('2d');
+
+                tmpctx.drawImage(this, destX, destY);
+                tmpctx.globalCompositeOperation = "source-in";
+                tmpctx.drawImage(masked_img, destX, destY);
+                ctx.drawImage(temp_c, 0, 0);
+            }
+
+
+
         }
 
 
@@ -188,6 +204,8 @@ function draw_kill(special) {
         // DRAW VICTIM
         ctx.fillStyle = r_name_color;
         ctx.fillText(VICTIM, destX + image_width + custom_offsetX + ([1, 2].includes(special) ? 24 : 14), 58);
+
+
     }
 
     // SRC
@@ -201,6 +219,37 @@ function draw_kill(special) {
     } else {
         image.src = $(`img[data-fname='${id}']`).attr("src");
     }
+
+}
+
+function masked_image(img, r, g, b, a, precision) {
+    // Returns a canvas, that contains only the color defined by
+    // RGBA values in a range of (-precision, + precision).
+    // Thanks to this guy: https://stackoverflow.com/a/22540439
+    // I was able to rewrite parts of his code to use in this project.
+    let c = document.createElement('canvas');
+    c.width = img.width;
+    c.height = img.width;
+    ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+    var canvasImgData = ctx.getImageData(0, 0, c.width, c.height);
+    var data = canvasImgData.data;
+    for (var i = 0; i < data.length; i += 4) {
+        var isInMask = (
+            data[i + 0] > (r - precision) && data[i + 0] < (r + precision) &&
+            data[i + 1] > (g - precision) && data[i + 1] < (g + precision) &&
+            data[i + 2] > (b - precision) && data[i + 2] < (b + precision) &&
+            data[i + 3] > 0
+        );
+        data[i + 0] = (isInMask) ? 241 : 0;
+        data[i + 1] = (isInMask) ? 233 : 0;
+        data[i + 2] = (isInMask) ? 203 : 0;
+        data[i + 3] = (isInMask) ? 255 : 0;
+    }
+    ctx.putImageData(canvasImgData, 0, 0);
+
+    return c;
 }
 
 function save() {
