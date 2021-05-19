@@ -43,6 +43,13 @@ $(document).ready(function() {
             $(this).css("background-color", "#d4232373");
         }
     })
+
+    $('.name-input').keypress(function(e) {
+        if ((e.keyCode == 10 || e.keyCode == 13) && e.shiftKey) {
+            $('#kill_btn_dom').click();
+        } else if (e.keyCode == 10 || e.keyCode == 13)
+            $('#kill_btn').click();
+    });
 });
 $(document).on("click", ".list-item", function() {
     // Select Kill Icon
@@ -52,6 +59,7 @@ $(document).on("click", ".list-item", function() {
 
     $("#display-feed").attr("data-icon-id", `${fname}`);
 });
+
 
 CanvasRenderingContext2D.prototype.roundRect = function(sx, sy, ex, ey, r) {
     // Thanks to this guy: https://stackoverflow.com/a/7838871
@@ -87,14 +95,28 @@ function color_switch() {
 }
 
 function draw_kill(special) {
-    let image = new Image();
+    let df = $("#display-feed");
+
+    let ks = new Image(); // Killstreak image
+    let is_ks = df.attr('data-is-ks');
+
     let special_bg = new Image(); // special_bg BG
     special_bg.origin = 'anonymous';
+
+    let image = new Image(); // Kill icon
     image.origin = 'anonymous';
-    let df = $("#display-feed");
+
+
+
+
+
+
     let KILLER = $("#KILLER").val(); // killer name
     let VICTIM = $("#VICTIM").val(); // victim name
     let id = df.attr('data-icon-id'); // icon fname from canvas attributes
+
+
+
 
     let bg = '#F1E9CB';
     if (!$('#is_init').prop('checked')) {
@@ -122,10 +144,12 @@ function draw_kill(special) {
     // DRAW
     image.onload = function() {
         // SETUP
+        let image_scale_multiplier = 1.52;
         let image_width = 0;
         if ($('#is_drawIcon').prop('checked')) {
             image_width = this.width;
         }
+        image_width *= image_scale_multiplier;
         ctx.font = "bold 125% Verdana";
 
         let custom_offsetX = 0; // Custom offset. Includes DOMINATION.
@@ -135,12 +159,15 @@ function draw_kill(special) {
             custom_offsetX = ctx.measureText($('#custom_special').val()).width;
         }
 
-        let custom_font_clr = '#3e3923'; // Font color changes whenether initiating a kill
+        let custom_font_clr = '#3e3923'; // Font color changes whenether initiating a kill or not
         if (!$('#is_init').prop('checked')) {
             custom_font_clr = '#F1E9CB';
         }
 
-        let feed_len = 112 + ctx.measureText(KILLER).width + image_width + custom_offsetX + ctx.measureText(VICTIM).width;
+        let feed_len = 112 + ctx.measureText(KILLER).width + image_width + custom_offsetX + ctx.measureText(VICTIM).width; // feed length
+        ks_offset = is_ks == true ? 20 : 0; // ks offset in px
+        feed_len += ks_offset // if killsteak, make feed rect longer
+
         $('#save').attr('data-img-width', Math.ceil(feed_len));
 
         // DRAW RECT
@@ -154,46 +181,57 @@ function draw_kill(special) {
         ctx.fillStyle = l_name_color;
         ctx.fillText(KILLER, sorta_mid + 38, 58);
         // ICON COORDS
-        let icon_offset = 40;
+        let icon_offset = 40 + ks_offset;
         if ($('#is_drawIcon').prop('checked')) {
-            icon_offset = 60;
+            icon_offset = 60 + ks_offset;
         }
         let destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
         let destY = c.height / 2 - this.height / 2 + 9;
+        // DRAW KILLSTREAK
+        if (is_ks == true) {
+            console.log('ks drawn')
+            ctx.drawImage(ks, destX - ks_offset, destY);
+        }
         // DRAW special_bg
         if (df.attr("data-special-bg") != "0") {
+            let special_bg_scale = image_scale_multiplier + 0.7;
             ctx.globalAlpha = 0.75;
+            ctx.globalCompositeOperation = "source-atop";
             ctx.drawImage(
                 special_bg,
-                destX + image_width / 2 - special_bg.width,
-                destY - special_bg.height / 2,
-                special_bg.width * 2,
-                special_bg.height * 2);
+                destX + image_width / 2 - special_bg.width * special_bg_scale / 2,
+                destY - 5 - (special_bg.height * special_bg_scale) / 4,
+                special_bg.width * special_bg_scale,
+                special_bg.height * special_bg_scale);
             ctx.globalAlpha = 1;
+            ctx.globalCompositeOperation = "source-over";
         }
         // DRAW ICON
         if ($('#is_drawIcon').prop('checked')) {
-            ctx.drawImage(this, destX, destY);
+            let w = this.width;
+            let h = this.height;
+            ctx.drawImage(this, destX, destY - h / 4, w * image_scale_multiplier, h * image_scale_multiplier);
+            if (!$('#is_init').prop('checked') || special == 1) {
+                // Invert the colors of kill icon, if not initiationg a kill.
 
-            if (!$('#is_init').prop('checked')) {
-                let masked_img = masked_image(this, 64, 60, 36, 255, 25);
+                let masked_img = masked_image(this, 64, 60, 36, 255, 55, w, h, image_scale_multiplier);
+                if (special == 1) {
+                    masked_img = masked_image(this, 245, 229, 193, 255, 10, w, h, image_scale_multiplier);
+                }
                 let temp_c = document.createElement('canvas');
                 temp_c.width = c.width;
                 temp_c.height = c.height;
                 let tmpctx = temp_c.getContext('2d');
 
-                tmpctx.drawImage(this, destX, destY);
+                tmpctx.drawImage(this, destX, destY - h / 4, w * image_scale_multiplier, h * image_scale_multiplier);
+
                 tmpctx.globalCompositeOperation = "source-in";
-                tmpctx.drawImage(masked_img, destX, destY);
+                tmpctx.drawImage(masked_img, destX, destY - h / 4);
                 ctx.drawImage(temp_c, 0, 0);
+                temp_c.delete;
             }
-
-
-
         }
-
-
-        // DRAW DOMINATION
+        // DRAW SPECIAL
         if (special == 1) {
             ctx.fillStyle = custom_font_clr;
             ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
@@ -204,8 +242,6 @@ function draw_kill(special) {
         // DRAW VICTIM
         ctx.fillStyle = r_name_color;
         ctx.fillText(VICTIM, destX + image_width + custom_offsetX + ([1, 2].includes(special) ? 24 : 14), 58);
-
-
     }
 
     // SRC
@@ -219,19 +255,22 @@ function draw_kill(special) {
     } else {
         image.src = $(`img[data-fname='${id}']`).attr("src");
     }
+    if (is_ks == true) {
+        ks.src = "icons_sorted/Killstreak_Icon.png";
+    }
 
 }
 
-function masked_image(img, r, g, b, a, precision) {
+function masked_image(img, r, g, b, a, precision, sw, sh, scale = 1) {
     // Returns a canvas, that contains only the color defined by
     // RGBA values in a range of (-precision, + precision).
     // Thanks to this guy: https://stackoverflow.com/a/22540439
     // I was able to rewrite parts of his code to use in this project.
     let c = document.createElement('canvas');
-    c.width = img.width;
-    c.height = img.width;
+    c.width = sw * scale;
+    c.height = sh * scale;
     ctx = c.getContext('2d');
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+    ctx.drawImage(img, 0, 0, sw * scale, sh * scale);
 
     var canvasImgData = ctx.getImageData(0, 0, c.width, c.height);
     var data = canvasImgData.data;
@@ -242,13 +281,12 @@ function masked_image(img, r, g, b, a, precision) {
             data[i + 2] > (b - precision) && data[i + 2] < (b + precision) &&
             data[i + 3] > 0
         );
-        data[i + 0] = (isInMask) ? 241 : 0;
-        data[i + 1] = (isInMask) ? 233 : 0;
-        data[i + 2] = (isInMask) ? 203 : 0;
+        data[i + 0] = (isInMask) ? 255 : 0;
+        data[i + 1] = (isInMask) ? 255 : 0;
+        data[i + 2] = (isInMask) ? 255 : 0;
         data[i + 3] = (isInMask) ? 255 : 0;
     }
     ctx.putImageData(canvasImgData, 0, 0);
-
     return c;
 }
 

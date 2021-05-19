@@ -242,7 +242,7 @@ button {
     background: #004bff;
 }
 
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
     .in-main {
         width: inherit;
     }
@@ -260,6 +260,9 @@ button {
         width: calc(100% - 10px);
         margin-right: 10px;
         margin-left: 10px;
+    }
+    #display-feed {
+        width: 100%
     }
 }
 
@@ -282,6 +285,9 @@ button {
         margin-right: 10px;
         margin-left: 10px;
     }
+    #display-feed {
+        width: 100%
+    }
 }
 
 @media (max-width: 766px) {
@@ -302,5 +308,8 @@ button {
         width: calc(100% - 10px);
         margin-right: 10px;
         margin-left: 10px;
+    }
+    #display-feed {
+        width: 100%
     }
 }

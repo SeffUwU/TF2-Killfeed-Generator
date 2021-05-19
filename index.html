@@ -69,18 +69,16 @@
         <div class="main" class='same-size'>
             <div class="in-main" id="left">
                 <p> Who's the Killer?</p>
-                <input type="text" id="KILLER" value="KILLER"> </input>
-                <div style="color: #b6872f;">
+                <input class='name-input' type="text" id="KILLER" value="Sefa + Sex defender"> </input>
+                <div style="color: #feedd1;">
                     <h2>HOW TO USE:</h2>
-                    <p> First select one of the killicons, shown above. You can also sort for time saving. </p>
+                    <p> First select one of the killicons, shown above. </p>
                     <p> Then select the name of both killers and victims (or not).</p>
                     <p> Then using the options menu, customize your killfeed message.</p>
-                    <p> Under the options menu, chose to either 'kill!' or 'dominate!' to render the message, and 'save?' to download the result on your device. </p>
-
+                    <p> Under the options menu, choose to either 'kill!' or 'dominate!' to render the message, and 'save?' to download the result on your device. </p>
                 </div>
             </div>
             <div align="center" class='same-size'>
-
                 <hr>
                 <h2 style='font-family: TF2build;'>OPTIONS</h2>
                 <p align="center" class="chk_boxs">
@@ -89,16 +87,18 @@
                     <label for="is_aussie" class='unselectable'> <input style="margin-bottom: 1em" id="is_aussie" style="width: 2em;" type="checkbox">   Aussie?</label><br>
                     <label for="is_drawIcon" class='unselectable'> <input style="margin-bottom: 1em" id="is_drawIcon" style="width: 2em;" type="checkbox" checked>   Draw killicon?</label><br>
                     <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button onclick='draw_kill(2)'>CUSTOM!</button>
-                    <p align="center" class="btn"> <button id="kill_btn" onclick="color_switch();" data-icon-id='1'> SWITCH COLORS? </button></p>
+                    <p align="center" class="btn"> <button onclick="color_switch();" data-icon-id='1'> SWITCH COLORS? </button></p>
                     <div class="clr-show">
                         <div class="clr-show-l"></div>
                         <div class="clr-show-r"></div>
-                    </div>
+                    </div> <br>
+                    <!--<h2 style='font-family: TF2build;'>KILLSTREAK:</h2>
+                     <label for="is_killstreak" class='unselectable'> <input type="text" id="is_killstreak" value="0"> </label> -->
                 </p>
                 <hr>
                 <p align="center" class="btn">
                     <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
-                    <button id="kill_btn" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
+                    <button id="kill_btn_dom" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
                 </p>
 
 
@@ -107,10 +107,16 @@
             </div>
             <div class="in-main" id="right">
                 <p> Who's the Victim'?</p>
-                <input type="text" id="VICTIM" value="VICTIM"> </input>
-                <div style="color: #b6872f;">
-                    <h2>Thanks for using my killfeed generator!</h2>
+                <input class='name-input' type="text" id="VICTIM" value="i'm going to die"> </input>
+                <div style="color: #feedd1;">
+                    <h1> SHORTCUTS: </h1>
+                    <h3> ENTER = KILL!</h3>
+                    <h3> SHIFT + ENTER = KILL!</h3>
+                    <h1>Thanks for using my killfeed generator!</h1>
                     <p> If you encounter any bugs, feel free to leave a message on my steam profile!</p>
+                    <a style="text-decoration: none; color:#4165a7; " href="https://steamcommunity.com/id/seffuwu">
+                        <p> Steam Profile </p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -120,7 +126,7 @@
 
 
     <div class='canvas-container'>
-        <canvas id='display-feed' data-icon-id='Killicon_golden_frying_pan.png' data-colors='0' data-special-bg='0'>
+        <canvas id='display-feed' data-icon-id='Killicon_armageddon.png' data-colors='0' data-special-bg='0' data-is-ks='0'>
                 <!-- CANVAS GOES HERE -->
             </canvas>
     </div>
