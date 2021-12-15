@@ -10,6 +10,17 @@ function get_icon_list() {
     }
 }
 $(document).ready(function() {
+    // on VICTIM or KILLER change draw kill
+    $('#KILLER, #VICTIM').on("input", ()=> {
+        if($('#updateOnChange').prop('checked')) {
+            draw_kill();
+        }
+    });
+    // killstreak
+    $('#is_killstreak').on("input", () => {
+        let ks_count = $('#is_killstreak').val();
+        $('#display-feed').attr('data-is-ks', ks_count >= 0 ? ks_count : 0);
+    });
     // special_bg?
     $('#is_crit').change(function() {
         var df = $("#display-feed");
@@ -95,10 +106,14 @@ function color_switch() {
 }
 
 function draw_kill(special) {
+    
     let df = $("#display-feed");
 
     let ks = new Image(); // Killstreak image
-    let is_ks = df.attr('data-is-ks');
+    let is_ks = df.attr('data-is-ks') > 0 ? true : false;
+    if (is_ks == true) {
+        ks.src = !$('#is_init').prop('checked') ? "icons_sorted/Killstreak_Icon02.png" : "icons_sorted/Killstreak_Icon.png";
+    }
 
     let special_bg = new Image(); // special_bg BG
     special_bg.origin = 'anonymous';
@@ -106,17 +121,9 @@ function draw_kill(special) {
     let image = new Image(); // Kill icon
     image.origin = 'anonymous';
 
-
-
-
-
-
     let KILLER = $("#KILLER").val(); // killer name
     let VICTIM = $("#VICTIM").val(); // victim name
     let id = df.attr('data-icon-id'); // icon fname from canvas attributes
-
-
-
 
     let bg = '#F1E9CB';
     if (!$('#is_init').prop('checked')) {
@@ -133,15 +140,14 @@ function draw_kill(special) {
         var l_name_color = "#557C83";
     }
 
-
-
     image.src = 'icons_sorted/' + id; // icon
 
     let c = document.getElementById("display-feed");
     c.width = 1000;
     c.height = 80;
     let ctx = c.getContext("2d");
-    // DRAW
+    ctx.imageSmoothingEnabled = true;
+    // Draw
     image.onload = function() {
         // SETUP
         let image_scale_multiplier = 1.52;
@@ -165,7 +171,13 @@ function draw_kill(special) {
         }
 
         let feed_len = 112 + ctx.measureText(KILLER).width + image_width + custom_offsetX + ctx.measureText(VICTIM).width; // feed length
-        ks_offset = is_ks == true ? 20 : 0; // ks offset in px
+
+        //Killstreak length (Also known as another custom offset because im trash at coding)
+        let ks_count = df.attr('data-is-ks'); 
+        ctx.font = "bold 20px Verdana";
+        ks_offset = is_ks == true ? ctx.measureText(ks_count).width + 30: 0; // ks offset in px
+        ctx.font = "bold 125% Verdana"; // reset font
+        //----
         feed_len += ks_offset // if killsteak, make feed rect longer
 
         $('#save').attr('data-img-width', Math.ceil(feed_len));
@@ -183,14 +195,20 @@ function draw_kill(special) {
         // ICON COORDS
         let icon_offset = 40 + ks_offset;
         if ($('#is_drawIcon').prop('checked')) {
-            icon_offset = 60 + ks_offset;
+            icon_offset = 50 + ks_offset;
         }
         let destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
         let destY = c.height / 2 - this.height / 2 + 9;
         // DRAW KILLSTREAK
-        if (is_ks == true) {
-            console.log('ks drawn')
-            ctx.drawImage(ks, destX - ks_offset, destY);
+        if (is_ks > 0) {
+            ctx.font = "bold 20px Verdana";
+            ctx.fillStyle = $('#is_init').prop('checked') ? '#202020': '#f1e9cb';
+            ctx.fillText(ks_count, destX - ks_offset, 58);
+            let ks_len = ctx.measureText(ks_count).width
+            console.log('Killstreak drawn.')
+            ctx.drawImage(ks, ks_len + destX - ks_offset, destY+6, ks.height/1.7, ks.width/1.7);
+            //font reset
+            ctx.font = "bold 125% Verdana";
         }
         // DRAW special_bg
         if (df.attr("data-special-bg") != "0") {
@@ -200,7 +218,7 @@ function draw_kill(special) {
             ctx.drawImage(
                 special_bg,
                 destX + image_width / 2 - special_bg.width * special_bg_scale / 2,
-                destY - 5 - (special_bg.height * special_bg_scale) / 4,
+                destY - (special_bg.height * special_bg_scale) / 4,
                 special_bg.width * special_bg_scale,
                 special_bg.height * special_bg_scale);
             ctx.globalAlpha = 1;
@@ -213,7 +231,6 @@ function draw_kill(special) {
             ctx.drawImage(this, destX, destY - h / 4, w * image_scale_multiplier, h * image_scale_multiplier);
             if (!$('#is_init').prop('checked') || special == 1) {
                 // Invert the colors of kill icon, if not initiationg a kill.
-
                 let masked_img = masked_image(this, 64, 60, 36, 255, 55, w, h, image_scale_multiplier);
                 if (special == 1) {
                     masked_img = masked_image(this, 245, 229, 193, 255, 10, w, h, image_scale_multiplier);
@@ -255,15 +272,11 @@ function draw_kill(special) {
     } else {
         image.src = $(`img[data-fname='${id}']`).attr("src");
     }
-    if (is_ks == true) {
-        ks.src = "icons_sorted/Killstreak_Icon.png";
-    }
-
 }
 
 function masked_image(img, r, g, b, a, precision, sw, sh, scale = 1) {
     // Returns a canvas, that contains only the color defined by
-    // RGBA values in a range of (-precision, + precision).
+    // RGBA values in a range of (-precision, +precision).
     // Thanks to this guy: https://stackoverflow.com/a/22540439
     // I was able to rewrite parts of his code to use in this project.
     let c = document.createElement('canvas');
@@ -281,9 +294,9 @@ function masked_image(img, r, g, b, a, precision, sw, sh, scale = 1) {
             data[i + 2] > (b - precision) && data[i + 2] < (b + precision) &&
             data[i + 3] > 0
         );
-        data[i + 0] = (isInMask) ? 255 : 0;
-        data[i + 1] = (isInMask) ? 255 : 0;
-        data[i + 2] = (isInMask) ? 255 : 0;
+        data[i + 0] = (isInMask) ? 241 : 0;
+        data[i + 1] = (isInMask) ? 233 : 0;
+        data[i + 2] = (isInMask) ? 203 : 0;
         data[i + 3] = (isInMask) ? 255 : 0;
     }
     ctx.putImageData(canvasImgData, 0, 0);

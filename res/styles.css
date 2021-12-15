@@ -132,7 +132,7 @@ hr {
     font-family: TF2build, Arial, Helvetica, sans-serif;
 }
 
-input[type=text] {
+input[type=text], input[type=number] {
     background: #feedd1;
     width: 100%;
     border: 0px;
