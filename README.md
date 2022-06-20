@@ -1,5 +1,5 @@
 # TF2-Killfeed-Generator
- A simple TF2 Killfeed Generator, based on HTML and JS. Close Enuf
+ A simple TF2 Killfeed Generator, based on HTML and JS. I'd say close enough.
 
 ## Use right now!
 https://seffuwu.github.io/TF2-Killfeed-Generator/
@@ -10,14 +10,13 @@ https://seffuwu.github.io/TF2-Killfeed-Generator/
 
 ## Usage
 1. Select the Icon in the list.
-2. Select the name of the Killer/Killer's. (Example: "Sefa + Gray Mann")
-3. Select the name of the Victim. (Example: "Vasnetsov")
+2. Type in the name of the Killer(-s). Example: "Sefa + Gray Mann + Sans"
+3. Type in the name of the Victim(-s). (Example: "Vasnetsov")
 4. Customize your killfeed message using the given options.
 6. Press either 'KILL!','DOMINATE!' or 'CUSTOM!' to render the image, and 'SAVE?' to download the image on your device.
 
 ##Saving the Image
-1. RMB on the canvas.
-2. Select "Save Image As..."
-3. Save
-OR
 1. Press 'SAVE?'
+
+##Credit
+No credit required, but I would love for you to at least leave a link. So that more people hear about this.
