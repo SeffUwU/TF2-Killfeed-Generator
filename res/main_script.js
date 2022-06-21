@@ -1,3 +1,4 @@
+let df;
 function get_icon_list() {
   // Append icons in killicon-container
   var len = Object.keys(iconlist).length; // icon list
@@ -15,6 +16,7 @@ function get_icon_list() {
 }
 
 $(document).ready(function () {
+  df = $("#display-feed");
   // on VICTIM or KILLER change draw kill
   $("#KILLER, #VICTIM").on("input", () => {
     if ($("#updateOnChange").prop("checked")) {
@@ -28,7 +30,6 @@ $(document).ready(function () {
   });
   // special_bg?
   $("#is_crit").change(function () {
-    var df = $("#display-feed");
     if (this.checked) {
       df.attr("data-special-bg", 1);
       $("#is_aussie").prop("checked", false);
@@ -38,7 +39,6 @@ $(document).ready(function () {
   });
   // Aussie?
   $("#is_aussie").change(function () {
-    var df = $("#display-feed");
     if (this.checked) {
       df.attr("data-special-bg", 2);
       $("#is_crit").prop("checked", false);
@@ -48,7 +48,7 @@ $(document).ready(function () {
   });
   // "Sort"
   $(".sortable").click(function () {
-    var tag = $(this).attr("data-tags");
+    const tag = $(this).attr("data-tags");
     if ($(this).attr("data-sort") == "off") {
       $(`.${tag}`).css("display", "");
       $(this).attr("data-sort", "on");
@@ -69,7 +69,7 @@ $(document).ready(function () {
 $(document).on("click", ".list-item", function () {
   // Select Kill Icon
   $(".list-item").removeClass("selected");
-  var fname = $(this).attr("data-fname");
+  const fname = $(this).attr("data-fname");
   $(this).addClass("selected");
 
   $("#display-feed").attr("data-icon-id", `${fname}`);
@@ -77,7 +77,6 @@ $(document).on("click", ".list-item", function () {
 
 function color_switch() {
   // switches data-colors attribute
-  var df = $("#display-feed");
   if (df.attr("data-colors") == 0) {
     df.attr("data-colors", 1);
     $(".clr-show-l").css("background", "#004bff");
@@ -90,7 +89,7 @@ function color_switch() {
 }
 
 function draw_kill(special) {
-  const df = $("#display-feed");
+  const [cWidth, cHeight] = [1000, 80]; // Canvas size
   const ks = new Image(); // Killstreak image
   const is_ks = df.attr("data-is-ks") > 0 ? true : false;
 
@@ -130,8 +129,8 @@ function draw_kill(special) {
   image.src = "icons_sorted/" + id;
 
   /* Setting canvas size */
-  c.width = 1000;
-  c.height = 80;
+  c.width = cWidth;
+  c.height = cHeight;
 
   /* Setting up context */
   const ctx = c.getContext("2d");
@@ -210,7 +209,7 @@ function draw_kill(special) {
       ctx.drawImage(
         ks,
         ks_len + destX - ks_offset,
-        destY + 6,
+        cHeight / 2,
         ks.height / 1.7,
         ks.width / 1.7
       );
@@ -220,14 +219,14 @@ function draw_kill(special) {
 
     // DRAW special_bg
     if (df.attr("data-special-bg") != "0") {
-      const special_bg_scale = image_scale_multiplier + 0.7;
-      ctx.globalAlpha = 0.75;
+      const special_bg_scale = image_scale_multiplier + 0.8;
+      ctx.globalAlpha = 0.85;
       ctx.globalCompositeOperation = "source-atop";
 
       ctx.drawImage(
         special_bg,
         destX + image_width / 2 - (special_bg.width * special_bg_scale) / 2,
-        destY - (special_bg.height * special_bg_scale) / 4,
+        cHeight / 6,
         special_bg.width * special_bg_scale,
         special_bg.height * special_bg_scale
       );
@@ -302,11 +301,7 @@ function draw_kill(special) {
     }
     // DRAW VICTIM
     ctx.fillStyle = r_name_color;
-    ctx.fillText(
-      VICTIM,
-      destX + custom_offsetX + ([1, 2].includes(special) ? 24 : 14),
-      58
-    );
+    ctx.fillText(VICTIM, destX + custom_offsetX + (special ? 24 : 14), 58);
   };
 
   // SRC
@@ -323,16 +318,16 @@ function draw_kill(special) {
 }
 
 function save() {
-  let feed_len = $("#save").attr("data-img-width");
-  let canvas = document.getElementById("display-feed");
-  let sorta_mid = canvas.width / 2 - feed_len / 2;
-  let temp_canvas = document.createElement("canvas");
+  const feed_len = $("#save").attr("data-img-width");
+  const canvas = document.getElementById("display-feed");
+  const sorta_mid = canvas.width / 2 - feed_len / 2;
+  const temp_canvas = document.createElement("canvas");
   temp_canvas.width = feed_len;
   temp_canvas.height = 80;
   tctx = temp_canvas.getContext("2d");
   tctx.drawImage(canvas, sorta_mid, 0, feed_len, 80, 0, -10, feed_len, 80);
 
-  var link = document.createElement("a");
+  const link = document.createElement("a");
   link.download = "killfeed_generated.png";
   link.href = temp_canvas.toDataURL();
   link.click();
