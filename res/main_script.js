@@ -14,20 +14,39 @@ function get_icon_list() {
     );
   }
 }
+/*  SORTING IN THIS BLOCK */
+$(document).ready(() => {
+  let hide = [];
+  $(".sortable").click(function () {
+    const tag = $(this).attr("data-tags");
+    $(`.list-item`).css("display", "");
+    if ($(this).attr("data-sort") == "off") {
+      hide = hide.filter((el) => el !== `.${tag}`);
+      console.log(`.${tag}`);
+      $(this).attr("data-sort", "on");
+    } else {
+      hide.push(`.${tag}`);
+      $(this).attr("data-sort", "off");
+    }
+    $(hide.join(",")).css("display", "none");
+  });
+});
 
 $(document).ready(function () {
   df = $("#display-feed");
   // on VICTIM or KILLER change draw kill
-  $("#KILLER, #VICTIM").on("input", () => {
+  $("#KILLER, #VICTIM, #is_killstreak").on("input", () => {
     if ($("#updateOnChange").prop("checked")) {
       draw_kill();
     }
   });
+
   // killstreak
   $("#is_killstreak").on("input", () => {
     let ks_count = $("#is_killstreak").val();
     $("#display-feed").attr("data-is-ks", ks_count >= 0 ? ks_count : 0);
   });
+
   // special_bg?
   $("#is_crit").change(function () {
     if (this.checked) {
@@ -37,6 +56,7 @@ $(document).ready(function () {
       df.attr("data-special-bg", 0);
     }
   });
+
   // Aussie?
   $("#is_aussie").change(function () {
     if (this.checked) {
@@ -46,33 +66,24 @@ $(document).ready(function () {
       df.attr("data-special-bg", 0);
     }
   });
-  // "Sort"
-  $(".sortable").click(function () {
-    const tag = $(this).attr("data-tags");
-    if ($(this).attr("data-sort") == "off") {
-      $(`.${tag}`).css("display", "");
-      $(this).attr("data-sort", "on");
-      $(this).css("background-color", "#2b793f");
-    } else {
-      $(`.${tag}`).css("display", "none");
-      $(this).attr("data-sort", "off");
-      $(this).css("background-color", "#d4232373");
-    }
-  });
 
+  // click kill btn if pressed enter
   $(".name-input").keypress(function (e) {
     if ((e.keyCode == 10 || e.keyCode == 13) && e.shiftKey) {
       $("#kill_btn_dom").click();
     } else if (e.keyCode == 10 || e.keyCode == 13) $("#kill_btn").click();
   });
 });
-$(document).on("click", ".list-item", function () {
-  // Select Kill Icon
-  $(".list-item").removeClass("selected");
-  const fname = $(this).attr("data-fname");
-  $(this).addClass("selected");
 
+$(document).on("click", ".list-item", function () {
+  // Select Kill Icon & draw
+  const fname = $(this).attr("data-fname");
+
+  $(".list-item").removeClass("selected");
+  $(this).addClass("selected");
   $("#display-feed").attr("data-icon-id", `${fname}`);
+
+  draw_kill();
 });
 
 function color_switch() {
