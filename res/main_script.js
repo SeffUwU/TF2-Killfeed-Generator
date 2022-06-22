@@ -100,7 +100,7 @@ function color_switch() {
 }
 
 function draw_kill(special) {
-  const [cWidth, cHeight] = [1000, 80]; // Canvas size
+  const [cWidth, cHeight] = [2000, 80]; // Canvas size
   const ks = new Image(); // Killstreak image
   const is_ks = df.attr("data-is-ks") > 0 ? true : false;
 
