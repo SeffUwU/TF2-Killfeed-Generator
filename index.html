@@ -37,12 +37,10 @@
         gtag('config', 'G-3YSW0YX4PD');
     </script>
 
-    <link rel="preload" href="res/styles-min.css" as="style">
-    <link rel="preload" as="image" href="./icons_sorted/Killstreak_Icon.png">
-    <link rel="preload" as="image" href="./icons_sorted/Killstreak_Icon02.png">
+    <link href="res/styles-min.css" as="style">
 
     <link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico?">
-    <link rel="stylesheet" href="res/styles-min.css">
+    <link rel="stylesheet" href="res/styles.css">
     <script src="res/jquery-3.6.0.slim.min.js"></script>
     <script type="text/javascript" src="res/icon.json"></script>
     <script src="res/main_script-min.js"></script>
@@ -50,34 +48,35 @@
 
 <body onload="get_icon_list(); draw_kill();">
     <h1 align="center" style='margin-bottom: 0'> Team Fortress 2 Killfeed Generator </h1>
-    <p align="center" style='margin-top: 0'> version 1.3.3</p>
-    <h1 align="center"> 
+    <p align="center" style='margin-top: 0'> version 1.3.4</p>
+    <h1 align="center">
         <a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu">
             Steam Profile</a> <br>
         <a style="text-decoration: none; color:#feedd1;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator">
             GitHub</a> <br> <br>
         <a style="text-decoration: none; color:#feedd1;" href="./README.md">
-                HOW TO USE?</a>
+            HOW TO USE?</a>
     </h1>
     <div class='wrapper'>
         <div class="sort" class='same-size'>
             <div class='sort-btns sort-class'>
-                <img class="sortable" src="sort/1.webp" alt="Scout" data-tags="scout" data-sort="on">
-                <img class="sortable" src="sort/2.webp" alt="Soldier" data-tags="soldier" data-sort="on">
-                <img class="sortable" src="sort/3.webp" alt="Pyro" data-tags="pyro" data-sort="on">
-                <img class="sortable" src="sort/4.webp" alt="Demoman" data-tags="demo" data-sort="on">
-                <img class="sortable" src="sort/5.webp" alt="Heavy" data-tags="heavy" data-sort="on">
-                <img class="sortable" src="sort/6.webp" alt="Engineer" data-tags="engi" data-sort="on">
-                <img class="sortable" src="sort/7.webp" alt="Medic" data-tags="medic" data-sort="on">
-                <img class="sortable" src="sort/8.webp" alt="Sniper" data-tags="sniper" data-sort="on">
-                <img class="sortable" src="sort/9.webp" alt="Spy" data-tags="spy" data-sort="on">
+                <img class="sortable sortable-style" src="sort/1.webp" alt="Scout" data-tags="scout" data-sort="on">
+                <img class="sortable sortable-style" src="sort/2.webp" alt="Soldier" data-tags="soldier" data-sort="on">
+                <img class="sortable sortable-style" src="sort/3.webp" alt="Pyro" data-tags="pyro" data-sort="on">
+                <img class="sortable sortable-style" src="sort/4.webp" alt="Demoman" data-tags="demo" data-sort="on">
+                <img class="sortable sortable-style" src="sort/5.webp" alt="Heavy" data-tags="heavy" data-sort="on">
+                <img class="sortable sortable-style" src="sort/6.webp" alt="Engineer" data-tags="engi" data-sort="on">
+                <img class="sortable sortable-style" src="sort/7.webp" alt="Medic" data-tags="medic" data-sort="on">
+                <img class="sortable sortable-style" src="sort/8.webp" alt="Sniper" data-tags="sniper" data-sort="on">
+                <img class="sortable sortable-style" src="sort/9.webp" alt="Spy" data-tags="spy" data-sort="on">
             </div>
             <div class='sort-btns sort-type'>
-                <img class="sortable" src="sort/primary.webp" alt="Primary" data-tags="primary" data-sort="on">
-                <img class="sortable" src="sort/secondary.webp" alt="Secondary" data-tags="secondary" data-sort="on">
-                <img class="sortable" src="sort/melee.webp" alt="Melee" data-tags="melee" data-sort="on">
-                <img class="sortable" src="sort/pda.webp" alt="PDA" data-tags="pda" data-sort="on">
-                <img class="sortable" src="sort/other.webp" alt="Other" data-tags="other" data-sort="on">
+                <img class="sortable sortable-style" src="sort/primary.webp" alt="Primary" data-tags="primary" data-sort="on">
+                <img class="sortable sortable-style" src="sort/secondary.webp" alt="Secondary" data-tags="secondary" data-sort="on">
+                <img class="sortable sortable-style" src="sort/melee.webp" alt="Melee" data-tags="melee" data-sort="on">
+                <img class="sortable sortable-style" src="sort/pda.webp" alt="PDA" data-tags="pda" data-sort="on">
+                <img class="sortable sortable-style" src="sort/other.webp" alt="Other" data-tags="other" data-sort="on">
+                <img class="sortable-style" id="deselect-all" style="border: 2px solid #9f9f9f" src="sort/minus.png" alt="Minus" data-tags="" data-sort="on">
             </div>
         </div>
         <div class='killicon-container'>
@@ -101,15 +100,17 @@
                 <hr>
                 <h2 style='font-family: TF2build;'>OPTIONS</h2>
                 <p align="center" class="chk_boxs">
-                    <label for="is_init" class='unselectable'> <input style="margin-bottom: 1em" id="is_init"
-                            style="width: 2em;" type="checkbox" checked> Initiator?</label>
-                    <label for="is_crit" class='unselectable'> <input style="margin-bottom: 1em" id="is_crit"
-                            style="width: 2em;" type="checkbox"> Crit Kill?</label>
-                    <label for="is_aussie" class='unselectable'> <input style="margin-bottom: 1em" id="is_aussie"
-                            style="width: 2em;" type="checkbox"> Aussie?</label><br>
-                    <label for="is_drawIcon" class='unselectable'> <input style="margin-bottom: 1em" id="is_drawIcon"
-                            style="width: 2em;" type="checkbox" checked> Draw killicon?</label><br>
-                    <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button
+                    <label for="is_init" class='unselectable'> <input class='option-checkbox' id="is_init"
+                            type="checkbox" checked> Initiator?</label>
+                    <label for="is_crit" class='unselectable'>
+                        <input class='option-checkbox' id="is_crit" type="checkbox"> Crit Kill?
+                    </label>
+                    <label for="is_aussie" class='unselectable'> <input class='option-checkbox' id="is_aussie"
+                            type="checkbox"> Aussie?</label><br>
+                    <label for="is_drawIcon" class='unselectable'> <input class='option-checkbox' id="is_drawIcon"
+                            type="checkbox" checked> Draw killicon?</label><br>
+                    <input type=
+                    "text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button
                         onclick='draw_kill(2)'>CUSTOM!</button>
                 <p align="center" class="btn color-switch"> <button onclick="color_switch();" data-icon-id='1'> SWITCH
                         COLORS? </button></p>
@@ -118,12 +119,12 @@
                     <div class="clr-show-r"></div>
                 </div> <br>
                 <h2 style='font-family: TF2build;'>KILLSTREAK:</h2>
-                <label for="is_killstreak" class='unselectable'> <input type="number" id="is_killstreak" value="3">
+                <label for="is_killstreak" class='unselectable'> <input type="number" id="is_killstreak" value="0">
                 </label>
 
                 </p>
                 <label for="updateOnChange" class='unselectable'> <input style="margin-bottom: 1em" id="updateOnChange"
-                        style="width: 2em;" type="checkbox"> Draw killfeed on change</label><br>
+                        style="width: 2em;" type="checkbox" checked> Draw killfeed on change</label><br>
                 <hr>
                 <p align="center" class="btn">
                     <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
@@ -156,12 +157,12 @@
 
 
     <div class='canvas-container'>
-        <canvas id='display-feed' data-icon-id='Killicon_conscientious_objector.png' data-colors='0' data-special-bg='0'
-            data-is-ks='3'>
+        <canvas id='display-feed' data-icon-name='Killicon_hot_hand.png' data-colors='0'
+            data-special-bg='0' width="2000" height="80" data-is-ks='0'>
             <!-- CANVAS GOES HERE -->
         </canvas>
     </div>
-    <p align="center"> To Save: RMB and press "Save Image As.." <br> Or just press the "SAVE?" button.</p>
+    <p align="center"> Prreffered way to save is to use 'SAVE?' btn. <br> Because it crops the feed. <br> ..but you can use RMB > Save image as..</p>
 
 </body>
 

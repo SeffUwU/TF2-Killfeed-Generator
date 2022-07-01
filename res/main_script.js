@@ -2,7 +2,7 @@ let df;
 function get_icon_list() {
   // Append icons in killicon-container
   var len = Object.keys(iconlist).length; // icon list
-  console.log(len);
+  console.log(`Icon amount:${len}`);
   var f = "icons_sorted/";
   for (var i = 1; i < len + 1; i++) {
     var fname = Object.keys(iconlist[`${i}`]);
@@ -14,15 +14,15 @@ function get_icon_list() {
     );
   }
 }
-/*  SORTING IN THIS BLOCK */
-$(document).ready(() => {
+
+$(document).ready(function () {
+  /*  SORTING IN THIS BLOCK */
   let hide = [];
-  $(".sortable").click(function () {
+  $(".sortable").on("click", function () {
     const tag = $(this).attr("data-tags");
     $(`.list-item`).css("display", "");
     if ($(this).attr("data-sort") == "off") {
       hide = hide.filter((el) => el !== `.${tag}`);
-      console.log(`.${tag}`);
       $(this).attr("data-sort", "on");
     } else {
       hide.push(`.${tag}`);
@@ -30,16 +30,15 @@ $(document).ready(() => {
     }
     $(hide.join(",")).css("display", "none");
   });
-});
 
-$(document).ready(function () {
-  df = $("#display-feed");
-  // on VICTIM or KILLER change draw kill
-  $("#KILLER, #VICTIM, #is_killstreak").on("input", () => {
-    if ($("#updateOnChange").prop("checked")) {
-      draw_kill();
-    }
+  $("#deselect-all").click(function () {
+    const s = $(".sortable");
+    s.attr("data-sort", "on");
+    s.click();
   });
+  /****************************/
+
+  df = $("#display-feed");
 
   // killstreak
   $("#is_killstreak").on("input", () => {
@@ -73,21 +72,33 @@ $(document).ready(function () {
       $("#kill_btn_dom").click();
     } else if (e.keyCode == 10 || e.keyCode == 13) $("#kill_btn").click();
   });
+
+  /* Draw kill on any of checkboxes changed */
+  $(".option-checkbox").change(function () {
+    draw_kill();
+  });
+
+  // on VICTIM or KILLER change draw kill
+  $("#KILLER, #VICTIM, #is_killstreak").on("input", () => {
+    if ($("#updateOnChange").prop("checked")) {
+      draw_kill();
+    }
+  });
 });
 
+/* Draw kill on icon select */
 $(document).on("click", ".list-item", function () {
-  // Select Kill Icon & draw
   const fname = $(this).attr("data-fname");
 
   $(".list-item").removeClass("selected");
   $(this).addClass("selected");
-  $("#display-feed").attr("data-icon-id", `${fname}`);
+  $("#display-feed").attr("data-icon-name", `${fname}`);
 
   draw_kill();
 });
 
-function color_switch() {
-  // switches data-colors attribute
+/* Team color switch */
+async function color_switch() {
   if (df.attr("data-colors") == 0) {
     df.attr("data-colors", 1);
     $(".clr-show-l").css("background", "#004bff");
@@ -97,10 +108,10 @@ function color_switch() {
     $(".clr-show-l").css("background", "#c40000");
     $(".clr-show-r").css("background", "#004bff");
   }
+  draw_kill();
 }
 
 function draw_kill(special) {
-  const [cWidth, cHeight] = [2000, 80]; // Canvas size
   const ks = new Image(); // Killstreak image
   const is_ks = df.attr("data-is-ks") > 0 ? true : false;
 
@@ -117,10 +128,10 @@ function draw_kill(special) {
   const VICTIM = $("#VICTIM").val();
 
   /* Path to kill icon */
-  const id = df.attr("data-icon-id");
+  const id = df.attr("data-icon-name");
 
   /* bg color */
-  let bg = $("#is_init").prop("checked") ? "#F1E9CB" : "#202020";
+  const bg = $("#is_init").prop("checked") ? "#F1E9CB" : "#202020";
 
   /* Left and Right text colors */
   const l_name_color = df.attr("data-colors") == 0 ? "#A3574A" : "#557C83";
@@ -128,6 +139,8 @@ function draw_kill(special) {
 
   /* Canvas */
   const c = document.getElementById("display-feed");
+
+  const [cWidth, cHeight] = [c.width, c.height];
 
   /* Differently colored KS if kill is initialized */
   if (is_ks == true) {
@@ -139,16 +152,13 @@ function draw_kill(special) {
   /* Setting kill icon */
   image.src = "icons_sorted/" + id;
 
-  /* Setting canvas size */
-  c.width = cWidth;
-  c.height = cHeight;
-
   /* Setting up context */
   const ctx = c.getContext("2d");
   ctx.imageSmoothingEnabled = true;
 
   /* Drawing process (such a mess) */
   image.onload = function () {
+    ctx.clearRect(0, 0, cWidth, cHeight);
     ctx.font = "bold 125% Verdana";
     /* setup for some killicon scale */
     const image_scale_multiplier = 1.52;
@@ -195,7 +205,7 @@ function draw_kill(special) {
     /* Drawin rectangle */
     const sorta_mid = c.width / 2 - feed_len / 2;
 
-    ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, c.height, 6);
+    ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, cHeight, 6);
     ctx.strokeStyle = "#000";
     ctx.fillStyle = bg;
     ctx.fill();
@@ -209,7 +219,7 @@ function draw_kill(special) {
       ks_offset + ($("#is_drawIcon").prop("checked") ? 50 : 40);
 
     const destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
-    const destY = c.height / 2 - this.height / 2 + 9;
+    const destY = cHeight / 2 - this.height / 2 + 9;
 
     // DRAW KILLSTREAK
     if (is_ks > 0) {
@@ -285,8 +295,8 @@ function draw_kill(special) {
 
         const temp_c = document.createElement("canvas");
         const tempctx = temp_c.getContext("2d");
-        temp_c.width = c.width;
-        temp_c.height = c.height;
+        temp_c.width = cWidth;
+        temp_c.height = cHeight;
 
         tempctx.drawImage(
           this,
