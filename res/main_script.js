@@ -75,6 +75,11 @@ $(document).ready(function () {
 
   /* Draw kill on any of checkboxes changed */
   $(".option-checkbox").change(function () {
+    if($("#is_init").prop("checked")) {
+      $("#transparent_bg").attr('disabled', true)
+    } else {
+      $("#transparent_bg").attr('disabled', false)
+    }
     draw_kill();
   });
 
@@ -130,8 +135,11 @@ function draw_kill(special) {
   /* Path to kill icon */
   const id = df.attr("data-icon-name");
 
+  /* Transparency modifier if needed */
+  const transparencyModifier =  $("#transparent_bg").prop("checked") && !$("#is_init").prop("checked")  ? 'c8'  : '';
+
   /* bg color */
-  const bg = $("#is_init").prop("checked") ? "#F1E9CB" : "#202020";
+  const bg = $("#is_init").prop("checked") ? "#F1E9CB" : `#202020` + transparencyModifier;
 
   /* Left and Right text colors */
   const l_name_color = df.attr("data-colors") == 0 ? "#A3574A" : "#557C83";
