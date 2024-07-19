@@ -1,174 +1,155 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#F3A957">
-    <!-- HTML Meta Tags -->
-    <title>TF2 Killfeed Generator</title>
-    <meta name="description" content="Make your own Team Fortress 2 themed killfeed messages">
-    <meta name="keywords"
-        content="tf2, team fortress 2, killfeed, kill, feed, generator, team, fortress, steam, game, 440, kill, notification, kill notification, kill notice, notice, feed, kill feed, alert, team, fortress, crits are fair and balanced, maker">
-    <meta name="robots" content="index, follow">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="language" content="English">
-
-    <!-- Facebook Meta Tags -->
-    <meta property="og:url" content="https://seffuwu.github.io/TF2-Killfeed-Generator">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="TF2 kill feed Generator">
-    <meta property="og:description" content="Make your own Team Fortress 2 themed killfeed messages">
-    <meta property="og:image" content="https://seffuwu.github.io/TF2-Killfeed-Generator/res/og-img.png">
-
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="seffuwu.github.io">
-    <meta property="twitter:url" content="https://seffuwu.github.io/TF2-Killfeed-Generator">
-    <meta name="twitter:title" content="TF2 kill feed Generator">
-    <meta name="twitter:description" content="Make your own Team Fortress 2 themed killfeed messages">
-    <meta name="twitter:image" content="https://seffuwu.github.io/TF2-Killfeed-Generator/res/og-img.png">
-    <!-- Google -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3YSW0YX4PD"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-3YSW0YX4PD');
-    </script>
-
-    <link href="res/styles-min.css" as="style">
-
-    <link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico?">
-    <link rel="stylesheet" href="res/styles.css">
-    <script src="res/jquery-3.6.0.slim.min.js"></script>
-    <script type="text/javascript" src="res/icon.json"></script>
-    <script src="res/main_script-min.js"></script>
-</head>
-
-<body onload="get_icon_list(); draw_kill();">
-    <h1 align="center" style='margin-bottom: 0'> Team Fortress 2 Killfeed Generator </h1>
-    <p align="center" style='margin-top: 0'> version 1.3.4</p>
-    <h1 align="center">
-        <a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu">
-            Steam Profile</a> <br>
-        <a style="text-decoration: none; color:#feedd1;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator">
-            GitHub</a> <br> <br>
-        <a style="text-decoration: none; color:#feedd1;" href="./README.md">
-            HOW TO USE?</a>
-    </h1>
-    <div class='wrapper'>
-        <div class="sort" class='same-size'>
-            <div class='sort-btns sort-class'>
-                <img class="sortable sortable-style" src="sort/1.webp" alt="Scout" data-tags="scout" data-sort="on">
-                <img class="sortable sortable-style" src="sort/2.webp" alt="Soldier" data-tags="soldier" data-sort="on">
-                <img class="sortable sortable-style" src="sort/3.webp" alt="Pyro" data-tags="pyro" data-sort="on">
-                <img class="sortable sortable-style" src="sort/4.webp" alt="Demoman" data-tags="demo" data-sort="on">
-                <img class="sortable sortable-style" src="sort/5.webp" alt="Heavy" data-tags="heavy" data-sort="on">
-                <img class="sortable sortable-style" src="sort/6.webp" alt="Engineer" data-tags="engi" data-sort="on">
-                <img class="sortable sortable-style" src="sort/7.webp" alt="Medic" data-tags="medic" data-sort="on">
-                <img class="sortable sortable-style" src="sort/8.webp" alt="Sniper" data-tags="sniper" data-sort="on">
-                <img class="sortable sortable-style" src="sort/9.webp" alt="Spy" data-tags="spy" data-sort="on">
-            </div>
-            <div class='sort-btns sort-type'>
-                <img class="sortable sortable-style" src="sort/primary.webp" alt="Primary" data-tags="primary" data-sort="on">
-                <img class="sortable sortable-style" src="sort/secondary.webp" alt="Secondary" data-tags="secondary" data-sort="on">
-                <img class="sortable sortable-style" src="sort/melee.webp" alt="Melee" data-tags="melee" data-sort="on">
-                <img class="sortable sortable-style" src="sort/pda.webp" alt="PDA" data-tags="pda" data-sort="on">
-                <img class="sortable sortable-style" src="sort/other.webp" alt="Other" data-tags="other" data-sort="on">
-                <img class="sortable-style" id="deselect-all" style="border: 2px solid #9f9f9f" src="sort/minus.png" alt="Minus"
-                    data-tags="" data-sort="on">
-            </div>
-        </div>
-        <div class='killicon-container'>
-            <!-- ICONS GO HERE -->
-        </div>
-        <div class="main" class='same-size'>
-            <div class="in-main" id="left">
-                <p> Who's the Killer?</p>
-                <input class='name-input' type="text" id="KILLER" value="Sefa + FenFen #savetf2"> </input>
-                <div class='helper-text' style="color: #feedd1;">
-                    <h2>HOW TO USE:</h2>
-                    <p> First select one of the kill icons, shown above. </p>
-                    <p> Then select the name of both killers and victims.</p>
-                    <p> Then using the options menu, customize your kill feed message.</p>
-                    <p> Under the options menu, choose to either 'kill!' or 'dominate!' to render the message, and press
-                        'save?' to download the result on your device. </p>
-                    <p> You can also use 'CUSTOM!' to render the message with custom text after the kill icon.</p>
-                </div>
-            </div>
-            <div align="center" class='same-size'>
-                <hr>
-                <h2 style='font-family: TF2build;'>OPTIONS</h2>
-                <p align="center" class="chk_boxs">
-                    <label for="is_init" class='unselectable'>
-                        <input class='option-checkbox is_init' id="is_init" type="checkbox" checked> Initiator
-                    </label>
-                    <label for="transparent_bg" id="transparent_bg_label" class='unselectable'>
-                        <input class='option-checkbox' id="transparent_bg" type="checkbox" disabled> Transparent BG (ONLY IF NOT INITIATOR)
-                    </label>
-                    <label for="is_crit" class='unselectable'>
-                        <input class='option-checkbox' id="is_crit" type="checkbox"> Crit Kill
-                    </label>
-                    <label for="is_aussie" class='unselectable'> <input class='option-checkbox' id="is_aussie"
-                            type="checkbox"> Aussie?</label><br>
-                    <label for="is_drawIcon" class='unselectable'> <input class='option-checkbox' id="is_drawIcon"
-                            type="checkbox" checked> Draw killicon</label><br>
-                    <input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button
-                        onclick='draw_kill(2)'>CUSTOM!</button>
-                <p align="center" class="btn color-switch"> <button onclick="color_switch();" data-icon-id='1'> SWITCH
-                        COLORS? </button></p>
-                <div class="clr-show">
-                    <div class="clr-show-l"></div>
-                    <div class="clr-show-r"></div>
-                </div> <br>
-                <h2 style='font-family: TF2build;'>KILLSTREAK:</h2>
-                <label for="is_killstreak" class='unselectable'> <input type="number" id="is_killstreak" value="0">
-                </label>
-
-                </p>
-                <label for="updateOnChange" class='unselectable'> <input style="margin-bottom: 1em" id="updateOnChange"
-                        style="width: 2em;" type="checkbox" checked> Draw killfeed on change</label><br>
-                <hr>
-                <p align="center" class="btn">
-                    <button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
-                    <button id="kill_btn_dom" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
-                </p>
-
-
-                <p align="center" class="btn"> <button id="save" onclick="save()" data-icon-id='1' data-img-width=''>
-                        SAVE? </button></p>
-
-            </div>
-            <div class="in-main" id="right">
-                <p> Who's the Victim'?</p>
-                <input class='name-input' type="text" id="VICTIM" value="generic sniper bot 4"> </input>
-                <div class='helper-text' style="color: #feedd1;">
-                    <h1> SHORTCUTS: </h1>
-                    <h3> ENTER = KILL!</h3>
-                    <h3> SHIFT + ENTER = DOMINATE!</h3>
-                    <h3>Thanks for using my kill feed generator!</h3>
-                    <p> If you encounter bugs or problems, feel free to leave a message on my steam profile!</p>
-                    <a style="text-decoration: none; color:#4165a7; " href="https://steamcommunity.com/id/seffuwu">
-                        <p> Steam Profile </p>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-
-
-    <div class='canvas-container'>
-        <canvas id='display-feed' data-icon-name='Killicon_hot_hand.png' data-colors='0' data-special-bg='0' width="2000"
-            height="80" data-is-ks='0'>
-            <!-- CANVAS GOES HERE -->
-        </canvas>
-    </div>
-    <p align="center"> Preferred way to save is to use 'SAVE?' btn. <br> Because it crops the feed. <br> ..but you can
-        use RMB > Save image as..</p>
-
-</body>
-
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#F3A957">
+		<!-- HTML Meta Tags -->
+		<title>TF2 Killfeed Generator</title>
+		<meta name="description" content="Make your own Team Fortress 2 themed killfeed messages">
+		<meta name="keywords"
+			content="tf2, team fortress 2, killfeed, kill, feed, generator, team, fortress, steam, game, 440, kill, notification, kill notification, kill notice, notice, feed, kill feed, alert, team, fortress, crits are fair and balanced, maker">
+		<meta name="robots" content="index, follow">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="language" content="English">
+		<!-- Facebook Meta Tags -->
+		<meta property="og:url" content="https://seffuwu.github.io/TF2-Killfeed-Generator">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="TF2 kill feed Generator">
+		<meta property="og:description" content="Make your own Team Fortress 2 themed killfeed messages">
+		<meta property="og:image" content="https://seffuwu.github.io/TF2-Killfeed-Generator/res/og-img.png">
+		<!-- Twitter Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image">
+		<meta property="twitter:domain" content="seffuwu.github.io">
+		<meta property="twitter:url" content="https://seffuwu.github.io/TF2-Killfeed-Generator">
+		<meta name="twitter:title" content="TF2 kill feed Generator">
+		<meta name="twitter:description" content="Make your own Team Fortress 2 themed killfeed messages">
+		<meta name="twitter:image" content="https://seffuwu.github.io/TF2-Killfeed-Generator/res/og-img.png">
+		<link href="res/styles-min.css" as="style">
+		<link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico?">
+		<link rel="stylesheet" href="res/styles.css">
+		<script src="res/jquery-3.6.0.slim.min.js"></script>
+		<script type="text/javascript" src="res/icon.js"></script>
+		<script src="res/main_script-min.js"></script>
+	</head>
+	<body onload="get_icon_list(); draw_kill();">
+		<h1 align="center" style='margin-bottom: 0; color:#ffffff;'> Team Fortress 2 Killfeed Generator </h1>
+		<p align="center" style='margin-top: 0'> version 1.3.6</p>
+		<h1 align="center">
+			<a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu">
+			Steam Profile</a> <br>
+			<a style="text-decoration: none; color:#feedd1;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator">
+			GitHub</a> <br> <br>
+			<a style="text-decoration: none; color:#feedd1;" href="./README.md">
+			HOW TO USE?</a>
+		</h1>
+		<div class='wrapper'>
+			<div class="sort" class='same-size'>
+				<div class='sort-btns sort-class'>
+					<img class="sortable sortable-style" src="sort/1.webp" alt="Scout" data-tags="scout" data-sort="on">
+					<img class="sortable sortable-style" src="sort/2.webp" alt="Soldier" data-tags="soldier" data-sort="on">
+					<img class="sortable sortable-style" src="sort/3.webp" alt="Pyro" data-tags="pyro" data-sort="on">
+					<img class="sortable sortable-style" src="sort/4.webp" alt="Demoman" data-tags="demo" data-sort="on">
+					<img class="sortable sortable-style" src="sort/5.webp" alt="Heavy" data-tags="heavy" data-sort="on">
+					<img class="sortable sortable-style" src="sort/6.webp" alt="Engineer" data-tags="engi" data-sort="on">
+					<img class="sortable sortable-style" src="sort/7.webp" alt="Medic" data-tags="medic" data-sort="on">
+					<img class="sortable sortable-style" src="sort/8.webp" alt="Sniper" data-tags="sniper" data-sort="on">
+					<img class="sortable sortable-style" src="sort/9.webp" alt="Spy" data-tags="spy" data-sort="on">
+				</div>
+				<div class='sort-btns sort-type'>
+					<img class="sortable sortable-style" src="sort/primary.webp" alt="Primary" data-tags="primary" data-sort="on">
+					<img class="sortable sortable-style" src="sort/secondary.webp" alt="Secondary" data-tags="secondary" data-sort="on">
+					<img class="sortable sortable-style" src="sort/melee.webp" alt="Melee" data-tags="melee" data-sort="on">
+					<img class="sortable sortable-style" src="sort/pda.webp" alt="PDA" data-tags="pda" data-sort="on">
+					<img class="sortable sortable-style" src="sort/other.webp" alt="Other" data-tags="other" data-sort="on">
+					<img class="sortable-style" id="deselect-all" style="border: 2px solid #9f9f9f" src="sort/minus.png" alt="Minus"
+						data-tags="" data-sort="on">
+				</div>
+			</div>
+			<div class='killicon-container'>
+				<!-- ICONS GO HERE -->
+			</div>
+			<div class="main" class='same-size'>
+				<div class="in-main" id="left">
+					<p> Who's the Killer?</p>
+					<input class='name-input' type="text" id="KILLER" value="Sefa + FenFen #savetf2"> </input>
+					<div class='helper-text' style="color: #feedd1;">
+						<h2>HOW TO USE:</h2>
+						<p> First select one of the kill icons, shown above. </p>
+						<p> Then select the name of both killers and victims.</p>
+						<p> Then using the options menu, customize your kill feed message.</p>
+						<p> Under the options menu, choose to either 'kill!' or 'dominate!' to render the message, and press
+							'save?' to download the result on your device. 
+						</p>
+						<p> You can also use 'CUSTOM!' to render the message with custom text after the kill icon.</p>
+					</div>
+				</div>
+				<div align="center" class='same-size'>
+					<hr>
+					<h2 style='font-family: TF2build;'>OPTIONS</h2>
+					<p align="center" class="chk_boxs">
+						<label for="is_init" class='unselectable'>
+						<input class='option-checkbox is_init' id="is_init" type="checkbox" checked> Initiator
+						</label>
+						<label for="transparent_bg" id="transparent_bg_label" class='unselectable'>
+						<input class='option-checkbox' id="transparent_bg" type="checkbox" disabled> Transparent BG (ONLY IF NOT INITIATOR)
+						</label>
+						<label for="is_crit" class='unselectable'>
+						<input class='option-checkbox' id="is_crit" type="checkbox"> Crit Kill
+						</label>
+						<label for="is_aussie" class='unselectable'> <input class='option-checkbox' id="is_aussie"
+							type="checkbox"> Aussie?</label><br>
+						<label for="is_drawIcon" class='unselectable'> <input class='option-checkbox' id="is_drawIcon"
+							type="checkbox" checked> Draw killicon</label><br>
+						<input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button
+							onclick='draw_kill(2)'>CUSTOM!</button>
+					<p align="center" class="btn color-switch"> <button onclick="color_switch();" data-icon-id='1'> SWITCH
+						COLORS? </button>
+					</p>
+					<div class="clr-show">
+						<div class="clr-show-l"></div>
+						<div class="clr-show-r"></div>
+					</div>
+					<br>
+					<h2 style='font-family: TF2build;'>KILLSTREAK:</h2>
+					<label for="is_killstreak" class='unselectable'> <input type="number" id="is_killstreak" value="0">
+					</label>
+					</p>
+					<label for="updateOnChange" class='unselectable'> <input style="margin-bottom: 1em" id="updateOnChange"
+						style="width: 2em;" type="checkbox" checked> Draw killfeed on change</label><br>
+					<hr>
+					<p align="center" class="btn">
+						<button id="kill_btn" onclick="draw_kill()" data-icon-id='1'> KILL! </button>
+						<button id="kill_btn_dom" onclick="draw_kill(1)" data-icon-id='1'> DOMINATE! </button>
+					</p>
+					<p align="center" class="btn"> <button id="save" onclick="save()" data-icon-id='1' data-img-width=''>
+						SAVE? </button>
+					</p>
+				</div>
+				<div class="in-main" id="right">
+					<p> Who's the Victim'?</p>
+					<input class='name-input' type="text" id="VICTIM" value="generic sniper bot 4"> </input>
+					<div class='helper-text' style="color: #feedd1;">
+						<h1> SHORTCUTS: </h1>
+						<h3> ENTER = KILL!</h3>
+						<h3> SHIFT + ENTER = DOMINATE!</h3>
+						<h3>Thanks for using my kill feed generator!</h3>
+						<p> If you encounter bugs or problems, feel free to leave a message on my steam profile!</p>
+						<a style="text-decoration: none; color:#4165a7; " href="https://steamcommunity.com/id/seffuwu">
+							<p> Steam Profile </p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='canvas-container'>
+			<canvas id='display-feed' data-icon-name='Killicon_hot_hand.png' data-colors='0' data-special-bg='0' width="2000"
+				height="80" data-is-ks='0'>
+				<!-- CANVAS GOES HERE -->
+			</canvas>
+		</div>
+		<p align="center"> Preferred way to save is to use 'SAVE?' btn. <br> Because it crops the feed. <br> ..but you can
+			use RMB > Save image as..
+		</p>
+	</body>
 </html>

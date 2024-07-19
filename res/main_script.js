@@ -1,16 +1,24 @@
+// Just for context i have no clue what most of the code below does.
+// I was going to refactor it.. but now thinking it about i don't want to.
+// I'll just update the killicon list and that its.
+
 let df;
 function get_icon_list() {
   // Append icons in killicon-container
-  var len = Object.keys(iconlist).length; // icon list
-  console.log(`Icon amount:${len}`);
+  var len = Object.keys(iconList).length; // icon list
+  console.log(`Icon amount: ${len}`);
   var f = "icons_sorted/";
+
   for (var i = 1; i < len + 1; i++) {
-    var fname = Object.keys(iconlist[`${i}`]);
-    var tags = iconlist[`${i}`][`${fname}`];
+    var fname = Object.keys(iconList[`${i}`]);
+    var tags = iconList[i][fname];
     $(".killicon-container").append(
-      `<div class='list-item ${tags}' data-fname="${fname}"> <img class="selectable-img " src="${f}${fname}" data-fname="${fname}" alt='` +
-        fname.toString().slice(0, -4).replace("_", " ") +
-        `'> </div>`
+      `<div class='list-item ${tags}' data-fname="${fname}">
+        <img class="selectable-img " src="${f}${fname}" data-fname="${fname}" alt='${fname
+        .toString()
+        .slice(0, -4)
+        .replace("_", " ")}'>
+       </div>`
     );
   }
 }
@@ -18,6 +26,7 @@ function get_icon_list() {
 $(document).ready(function () {
   /*  SORTING IN THIS BLOCK */
   let hide = [];
+
   $(".sortable").on("click", function () {
     const tag = $(this).attr("data-tags");
     $(`.list-item`).css("display", "");
@@ -50,20 +59,20 @@ $(document).ready(function () {
   $("#is_crit").change(function () {
     if (this.checked) {
       df.attr("data-special-bg", 1);
-      $("#is_aussie").prop("checked", false);
-    } else {
-      df.attr("data-special-bg", 0);
+      return $("#is_aussie").prop("checked", false);
     }
+
+    df.attr("data-special-bg", 0);
   });
 
   // Aussie?
   $("#is_aussie").change(function () {
     if (this.checked) {
       df.attr("data-special-bg", 2);
-      $("#is_crit").prop("checked", false);
-    } else {
-      df.attr("data-special-bg", 0);
+      return $("#is_crit").prop("checked", false);
     }
+
+    df.attr("data-special-bg", 0);
   });
 
   // click kill btn if pressed enter
@@ -75,11 +84,12 @@ $(document).ready(function () {
 
   /* Draw kill on any of checkboxes changed */
   $(".option-checkbox").change(function () {
-    if($("#is_init").prop("checked")) {
-      $("#transparent_bg").attr('disabled', true)
+    if ($("#is_init").prop("checked")) {
+      $("#transparent_bg").attr("disabled", true);
     } else {
-      $("#transparent_bg").attr('disabled', false)
+      $("#transparent_bg").attr("disabled", false);
     }
+
     draw_kill();
   });
 
@@ -117,6 +127,7 @@ async function color_switch() {
 }
 
 function draw_kill(special) {
+  if (!df) return;
   const ks = new Image(); // Killstreak image
   const is_ks = df.attr("data-is-ks") > 0 ? true : false;
 
@@ -136,10 +147,15 @@ function draw_kill(special) {
   const id = df.attr("data-icon-name");
 
   /* Transparency modifier if needed */
-  const transparencyModifier =  $("#transparent_bg").prop("checked") && !$("#is_init").prop("checked")  ? 'c8'  : '';
+  const transparencyModifier =
+    $("#transparent_bg").prop("checked") && !$("#is_init").prop("checked")
+      ? "c8"
+      : "";
 
   /* bg color */
-  const bg = $("#is_init").prop("checked") ? "#F1E9CB" : `#202020` + transparencyModifier;
+  const bg = $("#is_init").prop("checked")
+    ? "#F1E9CB"
+    : `#202020` + transparencyModifier;
 
   /* Left and Right text colors */
   const l_name_color = df.attr("data-colors") == 0 ? "#A3574A" : "#557C83";
@@ -210,7 +226,7 @@ function draw_kill(special) {
     /* i guess setting up the save button? */
     $("#save").attr("data-img-width", Math.ceil(feed_len + 1));
 
-    /* Drawin rectangle */
+    /* Drawing rectangle */
     const sorta_mid = c.width / 2 - feed_len / 2;
 
     ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, cHeight, 6);

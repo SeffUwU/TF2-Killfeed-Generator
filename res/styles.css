@@ -54,12 +54,14 @@ hr {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 0 0 0.5em 0.5em;
+  align-content: flex-start;
 }
 
 .killicon-container::-webkit-scrollbar {
   background: #feedd1;
+  scrollbar-width: thin;
 }
 
 .killicon-container::-webkit-scrollbar-thumb {
