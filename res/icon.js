@@ -800,4 +800,37 @@ var iconList = {
   267: {
     "Killicon_zamboni.png": "allclass other",
   },
+  268: {
+    "kill_demo.png ": "demo melee",
+  },
+  269: {
+    "kill_emp.png ": "allclass other",
+  },
+  270: {
+    "kill_heavy.png ": "heavy melee",
+  },
+  271: {
+    "kill_medic.png ": "medic melee",
+  },
+  272: {
+    "kill_pyro.png ": "pyro melee",
+  },
+  273: {
+    "kill_pyrounusedithink.png ": "pyro melee",
+  },
+  274: {
+    "kill_scout.png ": "scout melee",
+  },
+  275: {
+    "kill_sniper.png ": "sniper melee",
+  },
+  276: {
+    "kill_soldier.png ": "soldier melee",
+  },
+  277: {
+    "kill_spitdirect.png ": "allclass other",
+  },
+  278: {
+    "kill_spitpuddle.png": "allclass other",
+  },
 };
