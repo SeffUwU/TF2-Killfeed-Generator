@@ -1,6 +1,7 @@
 // Just for context i have no clue what most of the code below does.
 // I was going to refactor it.. but now thinking it about i don't want to.
 // I'll just update the killicon list and that its.
+const [BLUE_TEAM_CLR, RED_TEAM_CLR] = ["#557C83", "#A3574A"];
 
 let df;
 function get_icon_list() {
@@ -75,6 +76,31 @@ $(document).ready(function () {
     df.attr("data-special-bg", 0);
   });
 
+  $("#is_teamkill").change(function () {
+    if (this.checked) {
+      df.attr("data-teamkill", 1);
+
+      color_switch();
+
+      return $("#is_crit").prop("checked", false);
+    }
+
+    df.attr("data-teamkill", 0);
+
+    color_switch();
+  });
+
+  /* Draw kill on icon select */
+  $(document).on("click", ".list-item", function () {
+    const fname = $(this).attr("data-fname");
+
+    $(".list-item").removeClass("selected");
+    $(this).addClass("selected");
+    $("#display-feed").attr("data-icon-name", `${fname}`);
+
+    draw_kill();
+  });
+
   // click kill btn if pressed enter
   $(".name-input").keypress(function (e) {
     if ((e.keyCode == 10 || e.keyCode == 13) && e.shiftKey) {
@@ -99,35 +125,57 @@ $(document).ready(function () {
       draw_kill();
     }
   });
-});
-
-/* Draw kill on icon select */
-$(document).on("click", ".list-item", function () {
-  const fname = $(this).attr("data-fname");
-
-  $(".list-item").removeClass("selected");
-  $(this).addClass("selected");
-  $("#display-feed").attr("data-icon-name", `${fname}`);
 
   draw_kill();
 });
 
 /* Team color switch */
+/**
+ * TEAM-KILL === 0:
+ *    0 = RED  - BLUE
+ *    1 = BLUE - RED
+ * TEAM-KILL === 1:
+ *    0 = RED  - RED
+ *    1 = BLUE - BLUE
+ */
 async function color_switch() {
-  if (df.attr("data-colors") == 0) {
-    df.attr("data-colors", 1);
-    $(".clr-show-l").css("background", "#004bff");
-    $(".clr-show-r").css("background", "#c40000");
-  } else {
-    df.attr("data-colors", 0);
-    $(".clr-show-l").css("background", "#c40000");
-    $(".clr-show-r").css("background", "#004bff");
-  }
+  df.attr("data-colors", df.attr("data-colors") == 0 ? 1 : 0);
+
+  const [left, right] = returnTeamColorTuple();
+
+  $(".clr-show-l").css("background", left);
+  $(".clr-show-r").css("background", right);
+
   draw_kill();
 }
 
+function returnTeamColorTuple() {
+  console.log("teamKill", df.attr("data-teamkill"));
+  console.log("colors", df.attr("data-colors"));
+
+  if (df.attr("data-teamkill") == 1) {
+    if (df.attr("data-colors") == 0) {
+      return [RED_TEAM_CLR, RED_TEAM_CLR];
+    } else {
+      return [BLUE_TEAM_CLR, BLUE_TEAM_CLR];
+    }
+  } else {
+    if (df.attr("data-colors") == 0) {
+      return [RED_TEAM_CLR, BLUE_TEAM_CLR];
+    } else {
+      return [BLUE_TEAM_CLR, RED_TEAM_CLR];
+    }
+  }
+}
+
+/**
+ * @param {number} special
+ */
 function draw_kill(special) {
-  if (!df) return;
+  if (!df) {
+    return;
+  }
+
   const ks = new Image(); // Killstreak image
   const is_ks = df.attr("data-is-ks") > 0 ? true : false;
 
@@ -154,17 +202,14 @@ function draw_kill(special) {
 
   /* bg color */
   const bg = $("#is_init").prop("checked")
-    ? "#F1E9CB"
+    ? "#E2CDB2"
     : `#202020` + transparencyModifier;
-
-  /* Left and Right text colors */
-  const l_name_color = df.attr("data-colors") == 0 ? "#A3574A" : "#557C83";
-  const r_name_color = df.attr("data-colors") == 0 ? "#557C83" : "#A3574A";
+  /* Left and Right text colors  */
+  const [l_name_color, r_name_color] = returnTeamColorTuple();
 
   /* Canvas */
-  const c = document.getElementById("display-feed");
-
-  const [cWidth, cHeight] = [c.width, c.height];
+  const canvas = document.getElementById("display-feed");
+  const [cWidth, cHeight] = [canvas.width, canvas.height];
 
   /* Differently colored KS if kill is initialized */
   if (is_ks == true) {
@@ -177,7 +222,7 @@ function draw_kill(special) {
   image.src = "icons_sorted/" + id;
 
   /* Setting up context */
-  const ctx = c.getContext("2d");
+  const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = true;
 
   /* Drawing process (such a mess) */
@@ -197,15 +242,20 @@ function draw_kill(special) {
 
     /* Killstreak count */
     const ks_count = df.attr("data-is-ks");
-
+    const textConstants = {
+      domination: "is DOMINATING",
+      custom: $("#custom_special").val(),
+      fallDamage: "fell to a clumsy, painful death",
+    };
     /* custom offset */
     let custom_offsetX =
-      0 +
-      (special == 1
-        ? ctx.measureText("is DOMINATING").width
+      special == 1
+        ? ctx.measureText(textConstants.domination).width
         : special == 2
-        ? ctx.measureText($("#custom_special").val()).width
-        : 0);
+        ? ctx.measureText(textConstants.custom).width
+        : special == 3
+        ? ctx.measureText(textConstants.fallDamage).width
+        : 0;
 
     /* adding image width to custom offset */
     custom_offsetX += image_width;
@@ -216,18 +266,23 @@ function draw_kill(special) {
     ctx.font = "bold 125% Verdana"; // reset font
 
     /* This mess of stuff... */
-    const feed_len =
+    let feed_len =
       112 +
       ctx.measureText(KILLER).width +
       custom_offsetX +
       ctx.measureText(VICTIM).width +
       ks_offset;
 
+    if (special == 3) {
+      const len = ctx.measureText(textConstants.fallDamage).width;
+      feed_len -= len - 25;
+    }
+
     /* i guess setting up the save button? */
     $("#save").attr("data-img-width", Math.ceil(feed_len + 1));
 
     /* Drawing rectangle */
-    const sorta_mid = c.width / 2 - feed_len / 2;
+    const sorta_mid = canvas.width / 2 - feed_len / 2;
 
     ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, cHeight, 6);
     ctx.strokeStyle = "#000";
@@ -235,14 +290,20 @@ function draw_kill(special) {
     ctx.fill();
 
     // DRAW KILLER
-    ctx.fillStyle = l_name_color;
-    ctx.fillText(KILLER, sorta_mid + 38, 58);
+    if (special != 3) {
+      ctx.fillStyle = l_name_color;
+      ctx.fillText(KILLER, sorta_mid + 38, 58);
+    }
 
     // ICON COORDS
     const icon_offset =
       ks_offset + ($("#is_drawIcon").prop("checked") ? 50 : 40);
 
-    const destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
+    let destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
+
+    if (special == 3) {
+      destX -= ctx.measureText(textConstants.fallDamage).width - 40;
+    }
     const destY = cHeight / 2 - this.height / 2 + 9;
 
     // DRAW KILLSTREAK
@@ -339,10 +400,13 @@ function draw_kill(special) {
     // DRAW SPECIAL
     if (special == 1) {
       ctx.fillStyle = custom_font_clr;
-      ctx.fillText("is DOMINATING", destX + image_width + 14, 58);
+      ctx.fillText(textConstants.domination, destX + image_width + 14, 58);
     } else if (special == 2) {
       ctx.fillStyle = custom_font_clr;
-      ctx.fillText($("#custom_special").val(), destX + image_width + 14, 58);
+      ctx.fillText(textConstants.custom, destX + image_width + 14, 58);
+    } else if (special == 3) {
+      ctx.fillStyle = custom_font_clr;
+      ctx.fillText(textConstants.fallDamage, destX + image_width + 14, 58);
     }
     // DRAW VICTIM
     ctx.fillStyle = r_name_color;
@@ -359,6 +423,8 @@ function draw_kill(special) {
   image.src =
     special == 1
       ? "icons_sorted/Killicon_domination.png"
+      : special == 3
+      ? "icons_sorted/Killicon_skull.png"
       : $(`img[data-fname='${id}']`).attr("src");
 }
 
@@ -409,6 +475,7 @@ function masked_image(img, r, g, b, a, precision, sw, sh, scale = 1) {
   ctx.putImageData(canvasImgData, 0, 0);
   return c;
 }
+
 CanvasRenderingContext2D.prototype.roundRect = function (sx, sy, ex, ey, r) {
   // Thanks to this guy: https://stackoverflow.com/a/7838871
   // Made rounded rectangles extremely easy.

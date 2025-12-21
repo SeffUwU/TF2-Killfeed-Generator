@@ -249,11 +249,11 @@ button {
 }
 
 .clr-show-l {
-  background: #c40000;
+  background: #a3574a;
 }
 
 .clr-show-r {
-  background: #004bff;
+  background: #557c83;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
