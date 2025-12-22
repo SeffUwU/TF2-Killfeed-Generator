@@ -38,12 +38,13 @@
 	<h1 align="center" style='margin-bottom: 0; color:#ffffff;'> Team Fortress 2 Killfeed Generator </h1>
 	<p align="center" style='margin-top: 0'> version 1.4.0</p>
 	<h1 align="center">
-		<a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu">
-			Steam Profile</a> <br>
-		<a style="text-decoration: none; color:#feedd1;" href="https://github.com/SeffUwU/TF2-Killfeed-Generator">
-			GitHub</a> <br> <br>
-		<a style="text-decoration: none; color:#feedd1;" href="./README.md">
-			HOW TO USE?</a>
+		<a style="text-decoration: none; color:#feedd1; " href="https://steamcommunity.com/id/seffuwu">Steam Profile</a>
+		<br>
+		<a style="text-decoration: none; color:#feedd1;"
+			href="https://github.com/SeffUwU/TF2-Killfeed-Generator">GitHub</a>
+		<br>
+		<br>
+		<a style="text-decoration: none; color:#feedd1;" href="./README.md">HOW TO USE?</a>
 	</h1>
 	<div class='wrapper'>
 		<div class="sort" class='same-size'>
@@ -85,13 +86,14 @@
 					<p> Under the options menu, choose to either 'kill!' or 'dominate!' to render the message, and press
 						'save?' to download the result on your device.
 					</p>
-					<p> You can also use 'CUSTOM!' to render the message with custom text after the kill icon.</p>
+					<p> For a 'CUSTOM' killfeed message to work, make sure to select any of the "HERE" buttons</p>
 				</div>
 			</div>
 			<div align="center" class='same-size'>
 				<hr>
 				<h2 style='font-family: TF2build;'>OPTIONS</h2>
 				<p align="center" class="chk_boxs">
+				<div class="checkbox-wrapper">
 					<label for="is_init" class='unselectable'>
 						<input class='option-checkbox is_init' id="is_init" type="checkbox" checked> Initiator
 					</label>
@@ -102,17 +104,32 @@
 					<label for="is_crit" class='unselectable'>
 						<input class='option-checkbox' id="is_crit" type="checkbox"> Crit Kill
 					</label>
-					<label for="is_aussie" class='unselectable'> <input class='option-checkbox' id="is_aussie"
-							type="checkbox"> Aussie?</label>
+					<label for="is_aussie" class='unselectable'>
+						<input class='option-checkbox' id="is_aussie" type="checkbox"> Aussie?
+					</label>
 					<label for="is_teamkill" class='unselectable'>
 						<input class='option-checkbox' id="is_teamkill" type="checkbox"> Team kill?
-					</label><br>
-					<label for="is_drawIcon" class='unselectable'> <input class='option-checkbox' id="is_drawIcon"
-							type="checkbox" checked> Draw killicon</label><br>
-					<input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!"> <button
-						onclick='draw_kill(2)'>CUSTOM!</button>
-				<p align="center" class="btn color-switch"> <button onclick="color_switch();"> SWITCH
-						COLORS? </button>
+					</label>
+					<label for="is_drawIcon" class='unselectable'>
+						<input class='option-checkbox' id="is_drawIcon" type="checkbox" checked> Draw killicon
+					</label>
+				</div>
+				<div class="custom-text-container">
+					<p class="custom-text-title">Your Custom Text Goes Here:</p>
+					<input type="text" id="custom_special" value="CUSTOM FEED MESSAGE!">
+					<p class="custom-text-title">Place my custom text:</p>
+					<div class="custom-text-selector-container">
+						<button class="custom-text-selector-button" data-idx="0">HERE</button>
+						<div>KILLER</div>
+						<button class="custom-text-selector-button" data-idx="1">HERE</button>
+						<div>icon</div>
+						<button class="custom-text-selector-button" data-idx="2">HERE</button>
+						<div>VICTIM</div>
+						<button class="custom-text-selector-button" data-idx="3">HERE</button>
+					</div>
+				</div>
+
+				<p align="center" class="btn color-switch"> <button onclick="color_switch();"> SWITCH COLORS? </button>
 				</p>
 				<div class="clr-show">
 					<div class="clr-show-l"></div>
@@ -139,9 +156,6 @@
 				<p> Who's the Victim'?</p>
 				<input class='name-input' type="text" id="VICTIM" value="generic sniper bot 4"> </input>
 				<div class='helper-text' style="color: #feedd1;">
-					<h1> SHORTCUTS: </h1>
-					<h3> ENTER = KILL!</h3>
-					<h3> SHIFT + ENTER = DOMINATE!</h3>
 					<h3>Thanks for using my kill feed generator!</h3>
 					<p> If you encounter bugs or problems, feel free to leave a message on my steam profile!</p>
 					<a style="text-decoration: none; color:#4165a7; " href="https://steamcommunity.com/id/seffuwu">
@@ -161,4 +175,5 @@
 		use RMB > Save image as..
 	</p>
 </body>
+
 </html>

@@ -124,6 +124,12 @@ hr {
   flex-grow: 0.9;
 }
 
+.same-size > h2 {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-weight: 100;
+}
+
 .in-main {
   background: #24201b;
   width: 20vw;
@@ -256,9 +262,89 @@ button {
   background: #557c83;
 }
 
+.custom-text-selector-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 10px auto;
+  background-color: #302c29;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid #83746d;
+  width: fit-content;
+  margin-top: 0;
+}
+
+.custom-text-selector-container > div {
+  background-color: #302c29;
+  color: #ebe5cf;
+  height: 32px;
+  padding: 4px;
+  padding-inline: 6px;
+  border-radius: 6px;
+  margin-inline: 6px;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  letter-spacing: 2px;
+}
+
+.custom-text-selector-container > button {
+  height: 40px;
+  padding: 4px;
+}
+
+.custom-text-selector-container > button:hover {
+  background-color: #534b42;
+  cursor: pointer;
+}
+
+.custom-text-title {
+  font-size: 1.5em;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+#custom_special {
+  margin-bottom: 0;
+  width: 90%;
+}
+
+.custom-text-container {
+  background-color: #24201b;
+  color: #ebe5cf;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-items: center;
+  align-items: center;
+  border: 3px solid #83746d;
+  border-radius: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .color-switch button {
     width: 100%;
+  }
+
+  .custom-text-selector-container {
+    flex-direction: column;
   }
 
   .in-main {
@@ -321,6 +407,10 @@ button {
     width: 100%;
   }
 
+  .custom-text-selector-container {
+    flex-direction: column;
+  }
+
   .in-main {
     width: inherit;
     display: flex;
@@ -372,6 +462,10 @@ button {
 @media (max-width: 766px) {
   .color-switch button {
     width: 100%;
+  }
+
+  .custom-text-selector-container {
+    flex-direction: column;
   }
 
   .in-main {

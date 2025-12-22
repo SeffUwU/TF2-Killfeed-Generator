@@ -1,6 +1,9 @@
 // Just for context i have no clue what most of the code below does.
 // I was going to refactor it.. but now thinking it about i don't want to.
 // I'll just update the killicon list and that its.
+//
+// 12.22.2025: I rewrote parts of this code and i guess it's a bit more readable,
+// but it's still such a mess..
 const [BLUE_TEAM_CLR, RED_TEAM_CLR] = ["#557C83", "#A3574A"];
 
 let df;
@@ -98,14 +101,11 @@ $(document).ready(function () {
     $(this).addClass("selected");
     $("#display-feed").attr("data-icon-name", `${fname}`);
 
-    draw_kill();
-  });
-
-  // click kill btn if pressed enter
-  $(".name-input").keypress(function (e) {
-    if ((e.keyCode == 10 || e.keyCode == 13) && e.shiftKey) {
-      $("#kill_btn_dom").click();
-    } else if (e.keyCode == 10 || e.keyCode == 13) $("#kill_btn").click();
+    if (df.attr("data-custom-pos")) {
+      draw_kill(2);
+    } else {
+      draw_kill();
+    }
   });
 
   /* Draw kill on any of checkboxes changed */
@@ -116,14 +116,43 @@ $(document).ready(function () {
       $("#transparent_bg").attr("disabled", false);
     }
 
-    draw_kill();
+    if (df.attr("data-custom-pos")) {
+      draw_kill(2);
+    } else {
+      draw_kill();
+    }
   });
 
   // on VICTIM or KILLER change draw kill
-  $("#KILLER, #VICTIM, #is_killstreak").on("input", () => {
-    if ($("#updateOnChange").prop("checked")) {
+  $("#KILLER, #VICTIM, #is_killstreak, #custom_special").on("input", () => {
+    if (df.attr("data-custom-pos")) {
+      draw_kill(2);
+    } else if ($("#updateOnChange").prop("checked")) {
       draw_kill();
     }
+  });
+
+  /**
+   * Save custom text location idx
+   * 0 - {TEXT} KILLER ICON VICTIM
+   * 1 - KILLER {TEXT} ICON VICTIM
+   * 2 - KILLER ICON {TEXT} VICTIM
+   * 3 - KILLER ICON VICTIM {TEXT}
+   */
+  $(".custom-text-selector-button").on("click", function () {
+    const newIdx = $(this).attr("data-idx");
+    console.log("CUSTOM", df.attr("data-custom-pos"), newIdx);
+
+    $(".custom-text-selector-button").removeAttr("style");
+
+    if (df.attr("data-custom-pos") == newIdx) {
+      df.attr("data-custom-pos", null);
+    } else {
+      df.attr("data-custom-pos", newIdx);
+      $(this).css({ "background-color": "#F1E9CB" });
+    }
+
+    draw_kill(2);
   });
 
   draw_kill();
@@ -146,12 +175,16 @@ async function color_switch() {
   $(".clr-show-l").css("background", left);
   $(".clr-show-r").css("background", right);
 
-  draw_kill();
+  if (df.attr("data-custom-pos")) {
+    draw_kill(2);
+  } else {
+    draw_kill();
+  }
 }
 
 function returnTeamColorTuple() {
-  console.log("teamKill", df.attr("data-teamkill"));
-  console.log("colors", df.attr("data-colors"));
+  // console.log("teamKill", df.attr("data-teamkill"));
+  // console.log("colors", df.attr("data-colors"));
 
   if (df.attr("data-teamkill") == 1) {
     if (df.attr("data-colors") == 0) {
@@ -169,278 +202,269 @@ function returnTeamColorTuple() {
 }
 
 /**
- * @param {number} special
+ * @param {number} special:
+ * > 0 - nothing
+ * > 1 - DOMINATION
+ * > 2 - CUSTOM TEXT
+ * > 3 - PAINFUL DEATH
  */
 function draw_kill(special) {
   if (!df) {
     return;
   }
 
-  const ks = new Image(); // Killstreak image
-  const is_ks = df.attr("data-is-ks") > 0 ? true : false;
-
-  /* Special */
-  const special_bg = new Image(); // special_bg BG
-  special_bg.origin = "anonymous";
-
-  /* Kill icon */
-  const image = new Image(); // Kill icon
-  image.origin = "anonymous";
-
-  /* Killer and Victim strings */
-  const KILLER = $("#KILLER").val();
-  const VICTIM = $("#VICTIM").val();
-
-  /* Path to kill icon */
-  const id = df.attr("data-icon-name");
-
-  /* Transparency modifier if needed */
-  const transparencyModifier =
-    $("#transparent_bg").prop("checked") && !$("#is_init").prop("checked")
-      ? "c8"
-      : "";
-
-  /* bg color */
-  const bg = $("#is_init").prop("checked")
-    ? "#E2CDB2"
-    : `#202020` + transparencyModifier;
-  /* Left and Right text colors  */
-  const [l_name_color, r_name_color] = returnTeamColorTuple();
-
-  /* Canvas */
   const canvas = document.getElementById("display-feed");
   const [cWidth, cHeight] = [canvas.width, canvas.height];
 
-  /* Differently colored KS if kill is initialized */
-  if (is_ks == true) {
-    ks.src = !$("#is_init").prop("checked")
+  const ctx = canvas.getContext("2d");
+  const customTextPosIdx = parseInt(df.attr("data-custom-pos")) || 0;
+
+  // prepare Assets
+  const killstreakImg = new Image();
+  const isKillstreak = df.attr("data-is-ks") > 0;
+  const iconImg = new Image();
+  const specialBg = new Image(); // The Crit/Aussie background
+
+  specialBg.origin = "anonymous";
+  iconImg.origin = "anonymous";
+
+  const iconId = df.attr("data-icon-name");
+  // 1 = crit, 2 = aussie
+  const specialBgType = df.attr("data-special-bg");
+  // grab text and colors
+  const [KILLER, VICTIM] = [$("#KILLER").val(), $("#VICTIM").val()];
+  const [l_name_color, r_name_color] = returnTeamColorTuple();
+  const customTextFontColor = $("#is_init").prop("checked")
+    ? "#3e3923" // Initiator
+    : "#F1E9CB"; // Non Initiator
+
+  const textConstants = {
+    0: "unused",
+    1: "is DOMINATING",
+    2: $("#custom_special").val(),
+    3: "fell to a clumsy, painful death",
+  };
+
+  const specialText = textConstants[special] || "";
+
+  // load special bg image
+  if (specialBgType != "0") {
+    specialBg.src =
+      specialBgType == "1"
+        ? "icons_sorted/Killicon_crit.png"
+        : "icons_sorted/Killicon_australium.png";
+  }
+  // load killstreak image
+  if (isKillstreak) {
+    killstreakImg.src = !$("#is_init").prop("checked")
       ? "icons_sorted/Killstreak_Icon02.png"
       : "icons_sorted/Killstreak_Icon.png";
   }
 
-  /* Setting kill icon */
-  image.src = "icons_sorted/" + id;
-
-  /* Setting up context */
-  const ctx = canvas.getContext("2d");
-  ctx.imageSmoothingEnabled = true;
-
-  /* Drawing process (such a mess) */
-  image.onload = function () {
+  iconImg.onload = function () {
     ctx.clearRect(0, 0, cWidth, cHeight);
+
+    // setup font and define constants
     ctx.font = "bold 125% Verdana";
-    /* setup for some killicon scale */
-    const image_scale_multiplier = 1.52;
-    const image_width = $("#is_drawIcon").prop("checked")
-      ? this.width * image_scale_multiplier
+    const imgScaleMuliplier = 1.52;
+    const elementSpacing = 15;
+
+    // calc widthds
+    const killerWidth = special == 3 ? 0 : ctx.measureText(KILLER).width;
+    const victimWidth = ctx.measureText(VICTIM).width;
+    const specialWidth = specialText ? ctx.measureText(specialText).width : 0;
+    const iconWidth = $("#is_drawIcon").prop("checked")
+      ? this.width * imgScaleMuliplier
       : 0;
 
-    /* font colors */
-    const custom_font_clr = $("#is_init").prop("checked")
-      ? "#3e3923"
-      : "#F1E9CB";
-
-    /* Killstreak count */
-    const ks_count = df.attr("data-is-ks");
-    const textConstants = {
-      domination: "is DOMINATING",
-      custom: $("#custom_special").val(),
-      fallDamage: "fell to a clumsy, painful death",
-    };
-    /* custom offset */
-    let custom_offsetX =
-      special == 1
-        ? ctx.measureText(textConstants.domination).width
-        : special == 2
-        ? ctx.measureText(textConstants.custom).width
-        : special == 3
-        ? ctx.measureText(textConstants.fallDamage).width
-        : 0;
-
-    /* adding image width to custom offset */
-    custom_offsetX += image_width;
-
-    /* next ks offset to custom offset */
+    // change font
     ctx.font = "bold 20px Verdana";
-    ks_offset = is_ks == true ? ctx.measureText(ks_count).width + 30 : 0; // ks offset in px
-    ctx.font = "bold 125% Verdana"; // reset font
 
-    /* This mess of stuff... */
-    let feed_len =
-      112 +
-      ctx.measureText(KILLER).width +
-      custom_offsetX +
-      ctx.measureText(VICTIM).width +
-      ks_offset;
+    const killstreakCount = df.attr("data-is-ks");
+    const killstreakTextWidth = isKillstreak
+      ? ctx.measureText(killstreakCount).width + 5
+      : 0;
 
-    if (special == 3) {
-      const len = ctx.measureText(textConstants.fallDamage).width;
-      feed_len -= len - 25;
+    // approximate KS icon width
+    const killstreakIconWidth = isKillstreak ? 25 : 0;
+
+    const widthFinalKillstreak =
+      iconWidth + killstreakTextWidth + killstreakIconWidth;
+
+    // reset
+    ctx.font = "bold 125% Verdana";
+
+    // segment order
+    // {
+    //    type: 'killer' | 'victim' | 'icon' | 'text',
+    //    width: float
+    // }
+    const segments = [
+      { id: "killer", w: killerWidth, active: special != 3 },
+      { id: "icon", w: widthFinalKillstreak, active: true },
+      { id: "victim", w: victimWidth, active: true },
+    ];
+
+    if (specialText) {
+      if (df.attr("data-custom-pos")) {
+        segments.splice(customTextPosIdx, 0, {
+          id: "text",
+          w: specialWidth,
+          active: true,
+        });
+      } else if (special === 3)
+        segments.splice(3, 0, { id: "text", w: specialWidth, active: true });
     }
+    // calc feed length
+    const activeSegments = segments.filter((s) => s.active && s.w > 0);
+    const totalContentWidth = activeSegments.reduce((sum, s) => sum + s.w, 0);
+    const totalSpacing = (activeSegments.length + 1) * elementSpacing;
+    const feedLength = totalContentWidth + totalSpacing + 20; // +20 for extra padding
 
-    /* i guess setting up the save button? */
-    $("#save").attr("data-img-width", Math.ceil(feed_len + 1));
+    $("#save").attr("data-img-width", Math.ceil(feedLength));
 
-    /* Drawing rectangle */
-    const sorta_mid = canvas.width / 2 - feed_len / 2;
+    // draw background
+    const startX = cWidth / 2 - feedLength / 2;
+    const bg = $("#is_init").prop("checked")
+      ? "#E2CDB2"
+      : `#202020` + ($("#transparent_bg").prop("checked") ? "c8" : "");
 
-    ctx.roundRect(sorta_mid, 20, sorta_mid + feed_len, cHeight, 6);
-    ctx.strokeStyle = "#000";
+    // TODO: this controls height of feed. Probably add a toggle for slighly slimmer height
+    ctx.roundRect(startX, 20, startX + feedLength, cHeight, 6);
     ctx.fillStyle = bg;
     ctx.fill();
 
-    // DRAW KILLER
-    if (special != 3) {
-      ctx.fillStyle = l_name_color;
-      ctx.fillText(KILLER, sorta_mid + 38, 58);
-    }
+    let currentX = startX + elementSpacing + 10;
 
-    // ICON COORDS
-    const icon_offset =
-      ks_offset + ($("#is_drawIcon").prop("checked") ? 50 : 40);
+    // draw segments
+    activeSegments.forEach((seg) => {
+      // TODO: probably rewrite to switch but idc
+      if (seg.id === "killer") {
+        ctx.fillStyle = l_name_color;
+        ctx.fillText(KILLER, currentX, 58);
+      } else if (seg.id === "text") {
+        ctx.fillStyle = customTextFontColor;
+        ctx.fillText(specialText, currentX, 58);
+      } else if (seg.id === "victim") {
+        ctx.fillStyle = r_name_color;
+        ctx.fillText(VICTIM, currentX, 58);
+      } else if (seg.id === "icon") {
+        const iconDrawX = currentX;
+        const mainIconX = iconDrawX + killstreakTextWidth + killstreakIconWidth;
+        const h = this.height;
+        const destY = cHeight / 2 - h / 2 + 9 - h / 4;
 
-    let destX = sorta_mid + icon_offset + ctx.measureText(KILLER).width;
+        // draw special bg
+        if (specialBgType != "0" && specialBg.complete) {
+          const s_scale = imgScaleMuliplier + 0.8;
+          ctx.globalAlpha = 0.85;
 
-    if (special == 3) {
-      destX -= ctx.measureText(textConstants.fallDamage).width - 40;
-    }
-    const destY = cHeight / 2 - this.height / 2 + 9;
+          // center glow/sheen on the weapon icon
+          ctx.drawImage(
+            specialBg,
+            mainIconX + iconWidth / 2 - (specialBg.width * s_scale) / 2,
+            cHeight / 6,
+            specialBg.width * s_scale,
+            specialBg.height * s_scale
+          );
+          ctx.globalAlpha = 1;
+        }
 
-    // DRAW KILLSTREAK
-    if (is_ks > 0) {
-      ctx.font = "bold 20px Verdana";
-      ctx.fillStyle = $("#is_init").prop("checked") ? "#202020" : "#f1e9cb";
-      ctx.fillText(ks_count, destX - ks_offset, 58);
-      const ks_len = ctx.measureText(ks_count).width;
-      ctx.drawImage(
-        ks,
-        ks_len + destX - ks_offset,
-        cHeight / 2,
-        ks.height / 1.7,
-        ks.width / 1.7
-      );
+        // draw ks if enabled
+        if (isKillstreak) {
+          ctx.font = "bold 20px Verdana";
+          ctx.fillStyle = $("#is_init").prop("checked") ? "#202020" : "#f1e9cb";
+          ctx.fillText(killstreakCount, iconDrawX, 58);
+          ctx.drawImage(
+            killstreakImg,
+            iconDrawX + killstreakTextWidth,
+            cHeight / 2,
+            killstreakImg.width / 1.7,
+            killstreakImg.height / 1.7
+          );
 
-      ctx.font = "bold 125% Verdana"; //font reset
-    }
+          // reset
+          ctx.font = "bold 125% Verdana";
+        }
 
-    // DRAW special_bg
-    if (df.attr("data-special-bg") != "0") {
-      const special_bg_scale = image_scale_multiplier + 0.8;
-      ctx.globalAlpha = 0.85;
-      ctx.globalCompositeOperation = "source-atop";
+        // main icon
+        if ($("#is_drawIcon").prop("checked")) {
+          ctx.drawImage(
+            this,
+            mainIconX,
+            destY,
+            this.width * imgScaleMuliplier,
+            h * imgScaleMuliplier
+          );
 
-      ctx.drawImage(
-        special_bg,
-        destX + image_width / 2 - (special_bg.width * special_bg_scale) / 2,
-        cHeight / 6,
-        special_bg.width * special_bg_scale,
-        special_bg.height * special_bg_scale
-      );
-
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = "source-over";
-    }
-    // DRAW ICON
-    if ($("#is_drawIcon").prop("checked")) {
-      const w = this.width;
-      const h = this.height;
-      ctx.drawImage(
-        this,
-        destX,
-        destY - h / 4,
-        w * image_scale_multiplier,
-        h * image_scale_multiplier
-      );
-      if (!$("#is_init").prop("checked") || special == 1) {
-        // Invert the colors of kill icon, if not initiationg a kill.
-        let masked_img =
-          special == 1
-            ? masked_image(
-                this,
-                245,
-                229,
-                193,
-                255,
-                10,
-                w,
-                h,
-                image_scale_multiplier
-              )
-            : masked_image(
-                this,
-                64,
-                60,
-                36,
-                255,
-                55,
-                w,
-                h,
-                image_scale_multiplier
-              );
-
-        const temp_c = document.createElement("canvas");
-        const tempctx = temp_c.getContext("2d");
-        temp_c.width = cWidth;
-        temp_c.height = cHeight;
-
-        tempctx.drawImage(
-          this,
-          destX,
-          destY - h / 4,
-          w * image_scale_multiplier,
-          h * image_scale_multiplier
-        );
-
-        tempctx.globalCompositeOperation = "source-in";
-        tempctx.drawImage(masked_img, destX, destY - h / 4);
-        ctx.drawImage(temp_c, 0, 0);
-        temp_c.delete;
+          applyIconMask(
+            ctx,
+            this,
+            mainIconX,
+            destY,
+            imgScaleMuliplier,
+            special,
+            cWidth,
+            cHeight
+          );
+        }
       }
-    }
-    // DRAW SPECIAL
-    if (special == 1) {
-      ctx.fillStyle = custom_font_clr;
-      ctx.fillText(textConstants.domination, destX + image_width + 14, 58);
-    } else if (special == 2) {
-      ctx.fillStyle = custom_font_clr;
-      ctx.fillText(textConstants.custom, destX + image_width + 14, 58);
-    } else if (special == 3) {
-      ctx.fillStyle = custom_font_clr;
-      ctx.fillText(textConstants.fallDamage, destX + image_width + 14, 58);
-    }
-    // DRAW VICTIM
-    ctx.fillStyle = r_name_color;
-    ctx.fillText(VICTIM, destX + custom_offsetX + (special ? 24 : 14), 58);
+      currentX += seg.w + elementSpacing;
+    });
   };
 
-  // SRC
-  special_bg.src = $(
-    df.attr("data-special-bg") == "1"
-      ? `img[data-fname='Killicon_crit.png']`
-      : `img[data-fname='Killicon_australium.png']`
-  ).attr("src");
-
-  image.src =
+  iconImg.src =
     special == 1
       ? "icons_sorted/Killicon_domination.png"
       : special == 3
       ? "icons_sorted/Killicon_skull.png"
-      : $(`img[data-fname='${id}']`).attr("src");
+      : $(`img[data-fname='${iconId}']`).attr("src");
+}
+
+function applyIconMask(ctx, img, x, y, scale, special, cw, ch) {
+  if ($("#is_init").prop("checked") && special != 1) return;
+
+  const w = img.width;
+  const h = img.height;
+  let masked_img =
+    special == 1
+      ? masked_image(img, 245, 229, 193, 255, 10, w, h, scale)
+      : masked_image(img, 64, 60, 36, 255, 55, w, h, scale);
+
+  const temp_c = document.createElement("canvas");
+  const tempctx = temp_c.getContext("2d");
+  temp_c.width = cw;
+  temp_c.height = ch;
+
+  tempctx.drawImage(img, x, y, w * scale, h * scale);
+  tempctx.globalCompositeOperation = "source-in";
+  tempctx.drawImage(masked_img, x, y);
+  ctx.drawImage(temp_c, 0, 0);
 }
 
 function save() {
-  const feed_len = $("#save").attr("data-img-width");
+  const feedLength = $("#save").attr("data-img-width");
   const canvas = document.getElementById("display-feed");
-  const sorta_mid = canvas.width / 2 - feed_len / 2;
-  const temp_canvas = document.createElement("canvas");
-  temp_canvas.width = feed_len;
-  temp_canvas.height = 80;
-  tctx = temp_canvas.getContext("2d");
-  tctx.drawImage(canvas, sorta_mid, 0, feed_len, 80, 0, -10, feed_len, 80);
+  const approximateCenter = canvas.width / 2 - feedLength / 2;
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = feedLength;
+  tempCanvas.height = 80;
+  tctx = tempCanvas.getContext("2d");
+  tctx.drawImage(
+    canvas,
+    approximateCenter,
+    0,
+    feedLength,
+    80,
+    0,
+    -10,
+    feedLength,
+    80
+  );
 
   const link = document.createElement("a");
   link.download = "killfeed_generated.png";
-  link.href = temp_canvas.toDataURL();
+  link.href = tempCanvas.toDataURL();
   link.click();
   link.delete;
 }
