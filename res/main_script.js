@@ -306,14 +306,17 @@ function draw_kill(special) {
     ];
 
     if (specialText) {
-      if (df.attr("data-custom-pos")) {
+      if (special == 1) {
+        segments.splice(2, 0, { id: "text", w: specialWidth, active: true });
+      } else if (special === 3) {
+        segments.splice(3, 0, { id: "text", w: specialWidth, active: true });
+      } else if (df.attr("data-custom-pos")) {
         segments.splice(customTextPosIdx, 0, {
           id: "text",
           w: specialWidth,
           active: true,
         });
-      } else if (special === 3)
-        segments.splice(3, 0, { id: "text", w: specialWidth, active: true });
+      }
     }
     // calc feed length
     const activeSegments = segments.filter((s) => s.active && s.w > 0);
