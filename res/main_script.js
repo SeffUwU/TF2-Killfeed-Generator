@@ -53,7 +53,14 @@ $(document).ready(function () {
   });
 
   $("#deselect-all").click(function () {
-    $(".sortable").click();
+    const sortableElements = $(".sortable");
+
+    const onFiltered = sortableElements.filter('[data-sort="on"]');
+    const anyAreOn = onFiltered.length > 0;
+
+    const newState = anyAreOn ? "off" : "on";
+
+    (anyAreOn ? onFiltered : sortableElements).click();
   });
   /****************************/
 
