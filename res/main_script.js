@@ -31,9 +31,16 @@ $(document).ready(function () {
   /*  SORTING IN THIS BLOCK */
   let hide = [];
 
+  // NOTE: this doesn't support multi class sorting
+  // for example: a shotgun has classes consisting of:
+  // soldier pyro engi heavy
+  // if i hide any of the classes, it will also dissapear.
+  // probably think of a better sorting method that doesnt involve a lot of JS
   $(".sortable").on("click", function () {
     const tag = $(this).attr("data-tags");
+
     $(`.list-item`).css("display", "");
+
     if ($(this).attr("data-sort") == "off") {
       hide = hide.filter((el) => el !== `.${tag}`);
       $(this).attr("data-sort", "on");
@@ -41,13 +48,12 @@ $(document).ready(function () {
       hide.push(`.${tag}`);
       $(this).attr("data-sort", "off");
     }
+
     $(hide.join(",")).css("display", "none");
   });
 
   $("#deselect-all").click(function () {
-    const s = $(".sortable");
-    s.attr("data-sort", "on");
-    s.click();
+    $(".sortable").click();
   });
   /****************************/
 
